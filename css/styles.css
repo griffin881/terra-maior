@@ -1055,3 +1055,58 @@ input[type="range"]::-moz-range-thumb {
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ---------- v2 additions ---------- */
+h3 {
+  margin-top: var(--space-10, 2.5rem);
+  margin-bottom: var(--space-4);
+  font-size: 1.35rem;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+h3::first-letter { color: var(--accent); }
+
+.doc p { max-width: 68ch; }
+.doc ul { max-width: 68ch; }
+
+.mono { font-family: var(--mono); font-size: 0.92em; color: var(--ink); }
+
+.chart-box .axis path,
+.chart-box .axis line {
+  stroke: var(--rule-strong);
+  shape-rendering: crispEdges;
+}
+.chart-box .axis text {
+  fill: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+.chart-box .grid line {
+  stroke: var(--rule);
+  stroke-dasharray: 2 3;
+}
+.chart-box .tick-label {
+  fill: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+/* Pull-quote tighter on mobile */
+@media (max-width: 640px) {
+  .pullquote { font-size: 1.15rem; padding: var(--space-4) var(--space-4); }
+  .chapter__num { font-size: 2.5rem; }
+  .chapter__head { grid-template-columns: 1fr; gap: var(--space-3); }
+}
+
+/* Flight map paths */
+.flight-path--great { stroke: var(--accent); stroke-width: 1.6; fill: none; stroke-dasharray: 4 3; }
+.flight-path--actual { stroke: var(--accent-3); stroke-width: 2; fill: none; }
+.flight-path--rhumb { stroke: var(--ink-soft); stroke-width: 1; fill: none; stroke-dasharray: 2 2; }
+.flight-city { fill: var(--accent); }
+.flight-city-label { fill: var(--ink); font-family: var(--mono); font-size: 9px; }
+.flight-antarctic { fill: rgba(201,161,74,0.06); stroke: var(--rule-strong); stroke-width: 0.5; }
+
+.dd-bar { fill: var(--accent-2); }
+.dd-bar--null { fill: var(--accent); opacity: 0.7; }
+.dd-label { fill: var(--ink-soft); font-family: var(--mono); font-size: 9px; }

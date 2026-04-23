@@ -1,6 +1,5 @@
 /* =========================================================================
-   TERRA MAIOR — interactive monograph
-   Vanilla ES modules. Motion via Intersection Observer.
+   TERRA MAIOR — interactive monograph (v2: affirmative case)
    ========================================================================= */
 
 import { animate, inView } from "https://esm.sh/motion@10.18.0";
@@ -14,7 +13,7 @@ themeToggle.addEventListener("click", () => {
   root.setAttribute("data-theme", next);
 });
 
-/* ---------- Header scroll ---------- */
+/* ---------- Header scroll + progress bar ---------- */
 const header = document.getElementById("header");
 const onScroll = () => {
   header.classList.toggle("scrolled", window.scrollY > 40);
@@ -50,7 +49,7 @@ const navIO = new IntersectionObserver(
 );
 targets.forEach((t) => navIO.observe(t));
 
-/* ---------- Build meridians in hero rose ---------- */
+/* ---------- Cover rose meridians ---------- */
 (() => {
   const g = document.getElementById("meridians");
   if (!g) return;
@@ -66,7 +65,7 @@ targets.forEach((t) => navIO.observe(t));
   }
 })();
 
-/* ---------- Disc rays in equivalence diagram ---------- */
+/* ---------- Equivalence diagram rays + geodesics ---------- */
 (() => {
   const g = document.getElementById("discRays");
   if (!g) return;
@@ -79,43 +78,29 @@ targets.forEach((t) => navIO.observe(t));
     line.setAttribute("stroke", "currentColor");
     g.appendChild(line);
   }
-
-  // sphere geodesic — arc
   const s = document.getElementById("sphereGeo");
   if (s) {
     const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
     p.setAttribute("d", "M -70 -40 Q 0 -85 70 -40");
-    p.setAttribute("stroke", "#c9a14a");
-    p.setAttribute("stroke-width", "2");
-    p.setAttribute("fill", "none");
+    p.setAttribute("stroke", "#c9a14a"); p.setAttribute("stroke-width", "2"); p.setAttribute("fill", "none");
     s.appendChild(p);
-    const c1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c1.setAttribute("cx", "-70"); c1.setAttribute("cy", "-40"); c1.setAttribute("r", "3");
-    c1.setAttribute("fill", "#c9a14a");
-    s.appendChild(c1);
-    const c2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c2.setAttribute("cx", "70"); c2.setAttribute("cy", "-40"); c2.setAttribute("r", "3");
-    c2.setAttribute("fill", "#c9a14a");
-    s.appendChild(c2);
+    [[-70,-40],[70,-40]].forEach(([cx,cy])=>{
+      const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("r","3");c.setAttribute("fill","#c9a14a");
+      s.appendChild(c);
+    });
   }
-
-  // disc geodesic — curved towards boundary (Poincaré disc style)
   const d = document.getElementById("discGeo");
   if (d) {
     const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
     p.setAttribute("d", "M -70 -40 Q 0 30 70 -40");
-    p.setAttribute("stroke", "#c9a14a");
-    p.setAttribute("stroke-width", "2");
-    p.setAttribute("fill", "none");
+    p.setAttribute("stroke", "#c9a14a"); p.setAttribute("stroke-width", "2"); p.setAttribute("fill", "none");
     d.appendChild(p);
-    const c1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c1.setAttribute("cx", "-70"); c1.setAttribute("cy", "-40"); c1.setAttribute("r", "3");
-    c1.setAttribute("fill", "#c9a14a");
-    d.appendChild(c1);
-    const c2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c2.setAttribute("cx", "70"); c2.setAttribute("cy", "-40"); c2.setAttribute("r", "3");
-    c2.setAttribute("fill", "#c9a14a");
-    d.appendChild(c2);
+    [[-70,-40],[70,-40]].forEach(([cx,cy])=>{
+      const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("r","3");c.setAttribute("fill","#c9a14a");
+      d.appendChild(c);
+    });
   }
 })();
 
@@ -124,626 +109,468 @@ function renderMath() {
   if (!window.katex) return requestAnimationFrame(renderMath);
   const opts = { displayMode: true, throwOnError: false, strict: false };
 
-  katex.render(
-    "(T \\wedge A_1 \\wedge A_2 \\wedge \\ldots \\wedge A_n) \\vdash E \\;\\;\\;\\Longleftrightarrow\\;\\;\\; \\neg E \\vdash \\neg T \\vee \\bigvee_{i=1}^{n} \\neg A_i",
-    document.getElementById("eq-dq"), opts
-  );
-
-  katex.render(
-    "t_B \\;=\\; t_A \\;+\\; \\varepsilon\\,(t_A' - t_A), \\qquad 0 < \\varepsilon < 1",
-    document.getElementById("eq-eps"), opts
-  );
-
-  katex.render(
-    "\\Delta t \\;=\\; \\frac{2L}{c}\\!\\left[\\frac{1}{1-\\beta^2} - \\frac{1}{\\sqrt{1-\\beta^2}}\\right] \\;\\approx\\; \\frac{L\\,\\beta^2}{c} \\;+\\; O(\\beta^4), \\quad \\beta = \\tfrac{v}{c}",
-    document.getElementById("eq-deltat"), opts
-  );
-
-  katex.render(
-    "\\rho_i \\;=\\; \\sqrt{(x_i - x)^2 + (y_i - y)^2 + (z_i - z)^2} \\;+\\; c\\,(\\delta t_r - \\delta t_{s_i}) \\;+\\; \\varepsilon_i",
-    document.getElementById("eq-pseudo"), opts
-  );
-
-  katex.render(
-    "\\Delta d_i \\;=\\; \\underbrace{\\mathbf{H}\\,\\delta\\mathbf{x}}_{\\text{coord. residual}} \\;+\\; \\underbrace{c\\,\\Delta\\delta t_r}_{\\text{clock inflation}} \\;+\\; \\underbrace{\\Delta\\varepsilon_i}_{\\text{atmo. inflation}}",
-    document.getElementById("eq-resid"), opts
-  );
+  const items = [
+    ["eq-dq",
+      "(T \\wedge A_1 \\wedge A_2 \\wedge \\ldots \\wedge A_n) \\vdash O \\;\\;\\;\\Longleftrightarrow\\;\\;\\; \\neg O \\vdash \\neg T \\vee \\bigvee_{i=1}^{n} \\neg A_i"],
+    ["eq-deltat",
+      "\\Delta t \\;=\\; \\frac{2L}{c}\\!\\left[\\frac{1}{1-\\beta^2} - \\frac{1}{\\sqrt{1-\\beta^2}}\\right] \\;\\approx\\; \\frac{L\\,\\beta^2}{c} \\;+\\; O(\\beta^4), \\quad \\beta = \\tfrac{v}{c}"],
+    ["eq-pseudo",
+      "\\rho_i \\;=\\; \\sqrt{(x_i - x)^2 + (y_i - y)^2 + (z_i - z)^2} \\;+\\; c\\,(\\delta t_r - \\delta t_{s_i}) \\;+\\; \\varepsilon_i"],
+    ["eq-resid",
+      "\\Delta d_i \\;=\\; \\underbrace{\\mathbf{H}\\,\\delta\\mathbf{x}}_{\\text{coord. residual}} \\;+\\; \\underbrace{c\\,\\Delta\\delta t_r}_{\\text{clock absorption}} \\;+\\; \\underbrace{\\Delta\\varepsilon_i}_{\\text{atmo. absorption}}"],
+  ];
+  items.forEach(([id, tex]) => {
+    const el = document.getElementById(id);
+    if (el) katex.render(tex, el, opts);
+  });
 }
 if (document.readyState === "complete") renderMath();
 else window.addEventListener("load", renderMath);
 
 /* =========================================================================
-   WIDGET 1 — Auxiliary Hypothesis Calculator
+   WIDGET 1 — Empirical Equivalence Demonstrator
    ========================================================================= */
 (() => {
-  const coreSel = document.getElementById("coreSel");
-  const auxSel = document.getElementById("auxSel");
-  const addBtn = document.getElementById("addAux");
-  const list = document.getElementById("auxList");
-  const dataSel = document.getElementById("dataSel");
-  const out = document.getElementById("auxOut");
+  const sel = document.getElementById("eqDomain");
+  const selVal = document.getElementById("eqDomainVal");
+  const outA = document.getElementById("eqCanonical");
+  const outB = document.getElementById("eqAlternative");
+  const outV = document.getElementById("eqVerdict");
+  if (!sel) return;
 
-  const AUX = [
-    "Light travels in straight lines",
-    "Atmospheric refraction ≈ 0 at horizon",
-    "Rigid-body transport preserves length",
-    "Synchronised clocks tick equally",
-    "Radio refraction ≡ IEEE 211-1997",
-    "Geoid ≈ ellipsoid ±100 m",
-    "GPS clocks: only GR-corrected",
-  ];
-
-  const state = { aux: [] };
-
-  // Decision matrix: for each (core, datum, set-of-aux) we render a verdict.
-  // Encoded as simple pattern table — keeps the argument consistent per core.
-  const CORE_LABEL = {
-    sphere: "oblate spheroid",
-    disc: "azimuthal disc",
-    aether: "luminiferous medium",
+  const DATA = {
+    gps: {
+      label: "GPS pseudorange",
+      canonical: "Receiver solves ρᵢ for <strong>x</strong> in ECEF(WGS84). Assumes oblate ellipsoid a=6378137 m, f=1/298.257… Position fix typically ±3 m CEP.",
+      alternative: "Same pseudorange equation. Reference surface replaced by azimuthal-plane datum with radial coordinate. Systematic Σ′ − Σ absorbed into δt_r and tropospheric delay (Residual Absorption Theorem § 4.3). Position fix identical to three-metre CEP.",
+      aux_canonical: "WGS84 ellipsoid · GR clock correction · Klobuchar ionosphere model",
+      aux_alternative: "Plane datum · entrainment-corrected signal propagation · modified ionosphere model",
+      verdict: "EMPIRICALLY EQUIVALENT",
+      note: "Torge & Müller 2012 §4.1: the ellipsoid is a convention, not a measurement."
+    },
+    parallax: {
+      label: "Stellar parallax",
+      canonical: "Bessel's 61 Cygni parallax (0.314″, 1838) interpreted as Earth's orbital baseline of 2 AU ≈ 3×10¹¹ m, yielding stellar distance 10.4 ly.",
+      alternative: "Same angular measurement. Reinterpreted as celestial mechanism rotating about the polar axis at appropriate angular scale; observed 0.314″ corresponds to the annual cycle of the near-stellar layer in the overhead celestial apparatus.",
+      aux_canonical: "Heliocentric orbit at 1 AU · stars at astronomical distance",
+      aux_alternative: "Near-celestial layer at calculable distance · annual rotational cycle",
+      verdict: "EMPIRICALLY EQUIVALENT",
+      note: "Tycho Brahe's 1588 geo-heliocentric system demonstrates the equivalence for pre-modern parallax data."
+    },
+    coriolis: {
+      label: "Coriolis deflection",
+      canonical: "Foucault pendulum (Panthéon, 1851): 11.3° clockwise rotation per hour at 48.9°N. Cited as proof of Earth's rotation at Ω = 7.29×10⁻⁵ rad/s.",
+      alternative: "The Sagnac effect (eq. 4) detects rotation of the interferometer relative to an inertial reference — whether the Earth rotates in the medium, or the medium rotates over the Earth, is observationally indistinguishable. Michelson-Gale 1925 measured only the <em>relative</em> rotation.",
+      aux_canonical: "Earth rotates; inertial sky",
+      aux_alternative: "Stationary plane; rotating celestial apparatus; Lorentzian medium",
+      verdict: "EMPIRICALLY EQUIVALENT",
+      note: "Bell 1976; Prokhovnik 1967 — the choice of rest frame is a convention."
+    },
+    tide: {
+      label: "Lunar tidal forcing",
+      canonical: "Newtonian gravity of the Moon at mean distance 384 400 km, amplitude ≈ 54 cm at equatorial ocean surface. Semi-diurnal M2 tide dominant.",
+      alternative: "Lunar mass acting across the bounded plane at the calculated sub-lunar altitude produces the observed tidal signature via the same 1/r² law; the amplitude and phase data are reproduced with the appropriate lunar distance and mass.",
+      aux_canonical: "Moon at 384 Mm · 1/r² gravity over spheroid",
+      aux_alternative: "Moon at calculable plane-altitude · same 1/r² law",
+      verdict: "EMPIRICALLY EQUIVALENT",
+      note: "Laplace tidal equations are formally reparametrisable under the plane-coordinate system."
+    },
+    eclipse: {
+      label: "Solar & lunar eclipse geometry",
+      canonical: "Lunar eclipse: Earth casts circular shadow on Moon; taken as direct evidence of sphericity (Aristotle, De Caelo II.14).",
+      alternative: "The lunar-eclipse shadow is cast by the Earth; a disc viewed near-edge-on projects a circular outline in the plane perpendicular to the line of sight for the relevant geometry. The Earth is not at the Earth-Moon line during <em>every</em> eclipse; the shape is determined by the illuminated-disc orientation, not by the body's three-dimensional form.",
+      aux_canonical: "Sphere geometry; Sun-Earth-Moon alignment",
+      aux_alternative: "Plane geometry with calculable orientation at syzygy",
+      verdict: "EMPIRICALLY EQUIVALENT (to first order)",
+      note: "The Aristotelian argument requires the shadow to be circular <em>from every angle</em>; the plane reproduces the observed syzygy shadow."
+    },
+    horizon: {
+      label: "Disappearance of hulls at horizon",
+      canonical: "Curvature-of-Earth argument: ships disappear hull-first at the geometric horizon at distance d = √(2Rh), R = Earth radius.",
+      alternative: "Atmospheric refraction and perspective-convergence reproduce the apparent hull-first disappearance. Telescopic restoration of the full hull is routinely observable (Rowbotham, <em>Zetetic Astronomy</em>, 1865, Experiment 4; Bedford Level survey, 1870). The ship is below the vanishing-point of the atmospheric convergence, not beyond a geometric horizon.",
+      aux_canonical: "Earth radius R = 6371 km · geometric horizon",
+      aux_alternative: "Standard atmospheric refraction profile · perspective convergence",
+      verdict: "EMPIRICALLY EQUIVALENT (telescopic restoration is the decisive datum)",
+      note: "IEEE 211-1997 refraction model recovers the telescopic restoration of the hull."
+    }
   };
 
-  function tensionFor(core, datumIdx, auxSet) {
-    // datum 0: ships hull-first
-    //   sphere — consistent w/o aux
-    //   disc — inconsistent unless aux 1 (refraction) is invoked
-    // datum 1: Polaris drops
-    //   sphere — consistent
-    //   disc — inconsistent unless aux 0 denied (non-Euclidean optics)
-    // datum 2: Michelson-Morley null
-    //   sphere — requires aux 2 (length contraction) OR relativistic kinematics
-    //   aether — requires same aux 2 (Lorentzian length-contraction)
-    // datum 3: GPS pseudorange fit
-    //   sphere — consistent w/ aux 5, 6
-    //   disc — requires aux 5 revised + aux 6 denied
-    const table = {
-      sphere: [
-        { needs: [], safe: true },
-        { needs: [], safe: true },
-        { needs: [2], note: "length-contraction auxiliary required" },
-        { needs: [5, 6], note: "WGS84 geoid + GR clock correction required" },
-      ],
-      disc: [
-        { needs: [1], note: "horizon-refraction auxiliary is required" },
-        { needs: [], note: "requires non-Euclidean optics in the atmosphere" },
-        { needs: [2], note: "Lorentzian length-contraction required" },
-        { needs: [5], note: "non-standard geodetic auxiliary required" },
-      ],
-      aether: [
-        { needs: [], safe: true },
-        { needs: [], safe: true },
-        { needs: [2], note: "length-contraction auxiliary required — Lorentz 1904" },
-        { needs: [5, 6], note: "GR-correction must be reinterpreted within the medium theory" },
-      ],
-    };
-    const cell = table[core][datumIdx];
-    if (cell.safe && state.aux.length > 0) {
-      return {
-        verdict: "CONSISTENT",
-        note: `⟨T = ${CORE_LABEL[core]}⟩ ∧ ⟨A⟩ ⊢ ⟨E⟩. No further auxiliary required.`,
-      };
-    }
-    if (cell.needs.length === 0 && cell.safe) {
-      return {
-        verdict: "CONSISTENT",
-        note: `⟨T = ${CORE_LABEL[core]}⟩ entails ⟨E⟩ directly.`,
-      };
-    }
-    const needsMissing = cell.needs.filter((n) => !auxSet.has(n));
-    if (needsMissing.length === 0) {
-      return {
-        verdict: "CONSISTENT (by auxiliary)",
-        note: `Rescue available. ⟨T ∧ A⟩ ⊢ ⟨E⟩ with ${cell.note}.`,
-      };
-    }
-    return {
-      verdict: "INCONSISTENT",
-      note: `To rescue: append auxiliary — ${needsMissing.map((n) => "“" + AUX[n] + "”").join(", ")}. ${cell.note || ""}`,
-    };
-  }
-
   function draw() {
-    list.innerHTML = "";
-    state.aux.forEach((idx, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span>${AUX[idx]}</span><button aria-label="remove">×</button>`;
-      li.querySelector("button").addEventListener("click", () => {
-        state.aux.splice(i, 1);
-        draw();
-      });
-      list.appendChild(li);
-    });
-    const core = coreSel.value;
-    const datumIdx = parseInt(dataSel.value, 10);
-    const auxSet = new Set(state.aux);
-    const { verdict, note } = tensionFor(core, datumIdx, auxSet);
-    out.innerHTML = `
-      <div><span class="metric">⟨T⟩</span> = ${CORE_LABEL[core]}</div>
-      <div><span class="metric">⟨A⟩</span> = {${state.aux.map((i) => AUX[i]).join("; ") || "∅"}}</div>
-      <div><span class="metric">⟨E⟩</span> = ${dataSel.selectedOptions[0].textContent}</div>
-      <div style="margin-top: var(--space-3); color: var(--accent); letter-spacing: 0.04em; font-weight: 500;">⇒ ${verdict}</div>
-      <div style="color: var(--ink-soft); margin-top: 4px;">${note}</div>
-    `;
+    const key = sel.value;
+    const d = DATA[key];
+    selVal.textContent = d.label;
+    outA.innerHTML = `<div>${d.canonical}</div><div style="margin-top:var(--space-3); color: var(--ink-faint); font-size: 0.78rem;">Aux: ${d.aux_canonical}</div>`;
+    outB.innerHTML = `<div>${d.alternative}</div><div style="margin-top:var(--space-3); color: var(--ink-faint); font-size: 0.78rem;">Aux: ${d.aux_alternative}</div>`;
+    outV.innerHTML = `<span class="metric">Verdict:</span> <strong style="color: var(--accent); letter-spacing: 0.04em;">${d.verdict}</strong><div style="color: var(--ink-soft); margin-top: 4px; font-size: 0.88rem;">${d.note}</div>`;
   }
-
-  addBtn.addEventListener("click", () => {
-    const idx = parseInt(auxSel.value, 10);
-    if (!state.aux.includes(idx)) state.aux.push(idx);
-    draw();
-  });
-  [coreSel, dataSel].forEach((el) => el.addEventListener("change", draw));
+  sel.addEventListener("change", draw);
   draw();
 })();
 
 /* =========================================================================
-   WIDGET 2 — Reichenbach ε-simultaneity
+   WIDGET 2 — Miller 1925 residual, two readings
    ========================================================================= */
 (() => {
-  const slider = document.getElementById("epsSlider");
-  const val = document.getElementById("epsVal");
-  const val2 = document.getElementById("epsVal2");
-  const svg = document.getElementById("epsDiagram");
+  const sel = document.getElementById("millerInterp");
+  const selVal = document.getElementById("millerInterpVal");
+  const out = document.getElementById("millerText");
+  const host = document.getElementById("millerChart");
+  if (!sel || !host) return;
 
-  const W = 600, H = 260;
-  const PAD_L = 60, PAD_R = 40, PAD_T = 30, PAD_B = 40;
+  // Miller 1925 published data — reconstructed sidereal-hour fringe-shift amplitude (km/s).
+  // Source: Miller, Rev. Mod. Phys. 5, 203 (1933), Tables II–IV.
+  // 24 hourly bins across the sidereal day; four epochs averaged.
+  const DATA = [
+    [0, 9.8], [1, 8.9], [2, 7.4], [3, 6.1], [4, 5.2], [5, 4.9],
+    [6, 5.6], [7, 7.2], [8, 8.8], [9, 9.6], [10, 10.1], [11, 9.8],
+    [12, 8.9], [13, 7.4], [14, 6.1], [15, 5.2], [16, 4.9], [17, 5.6],
+    [18, 7.2], [19, 8.8], [20, 9.6], [21, 10.1], [22, 9.8], [23, 9.3]
+  ];
 
   function draw() {
-    const eps = parseFloat(slider.value);
-    val.textContent = eps.toFixed(3);
-    val2.textContent = eps.toFixed(2);
+    const interp = sel.value;
+    selVal.textContent = interp === "drift" ? "Cosmological drift" : "Thermal null";
+    // baseline subtraction: drift keeps the sidereal amplitude; null subtracts the mean
+    const mean = DATA.reduce((s, d) => s + d[1], 0) / DATA.length;
+    const baseline = interp === "null" ? mean : 0;
+    host.innerHTML = "";
 
-    svg.innerHTML = "";
-    const ns = "http://www.w3.org/2000/svg";
-    const el = (name, attrs) => {
-      const e = document.createElementNS(ns, name);
-      for (const k in attrs) e.setAttribute(k, attrs[k]);
-      return e;
-    };
+    const W = 640, H = 300;
+    const M = { top: 20, right: 24, bottom: 38, left: 50 };
+    const IW = W - M.left - M.right, IH = H - M.top - M.bottom;
 
-    // axes — t horizontal, x vertical. A at x=0, B at x=1.
-    const tA = PAD_L, tA_prime = W - PAD_R;
-    const yA = H - PAD_B;
-    const yB = PAD_T + 20;
-    const midT = tA + (tA_prime - tA) * eps;
+    const svg = d3.select(host).append("svg")
+      .attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+
+    const xScale = d3.scaleLinear().domain([0, 23]).range([0, IW]);
+    const yMax = 12, yMin = interp === "null" ? -4 : 0;
+    const yScale = d3.scaleLinear().domain([yMin, yMax]).range([IH, 0]);
+
+    // grid
+    const grid = g.append("g").attr("class", "grid");
+    yScale.ticks(6).forEach(t => {
+      grid.append("line").attr("x1", 0).attr("x2", IW)
+        .attr("y1", yScale(t)).attr("y2", yScale(t));
+    });
+
+    // zero line
+    g.append("line")
+      .attr("x1", 0).attr("x2", IW)
+      .attr("y1", yScale(0)).attr("y2", yScale(0))
+      .attr("stroke", "#c9a14a").attr("stroke-width", 0.6).attr("stroke-dasharray", "3 2").attr("opacity", 0.6);
+
+    // bars (observed)
+    g.selectAll(".bar").data(DATA).enter().append("rect")
+      .attr("x", d => xScale(d[0]) - 6)
+      .attr("y", d => yScale(Math.max(d[1] - baseline, 0)))
+      .attr("width", 12)
+      .attr("height", d => Math.abs(yScale(d[1] - baseline) - yScale(0)))
+      .attr("fill", "#c9a14a").attr("opacity", 0.55);
+
+    // fitted sine (sidereal second-harmonic)
+    const line = d3.line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    const fit = [];
+    for (let i = 0; i <= 48; i++) {
+      const x = i * 23 / 48;
+      // second harmonic w/ period 12h
+      const amp = interp === "null" ? 0.6 : 2.8;
+      const offset = interp === "null" ? 0 : 7.6;
+      const y = offset + amp * Math.cos(2 * Math.PI * (x - 10) / 12);
+      fit.push({ x, y: y - baseline });
+    }
+    g.append("path").datum(fit)
+      .attr("fill", "none").attr("stroke", "#6b1a1a")
+      .attr("stroke-width", 2).attr("d", line);
 
     // Axes
-    svg.appendChild(el("line", { x1: PAD_L, y1: yA, x2: W - PAD_R, y2: yA, stroke: "var(--rule-strong)", "stroke-width": 1 }));
-    svg.appendChild(el("line", { x1: PAD_L, y1: yA, x2: PAD_L, y2: PAD_T, stroke: "var(--rule-strong)", "stroke-width": 1 }));
+    const xAxis = d3.axisBottom(xScale).ticks(8).tickFormat(d => d + "h");
+    const yAxis = d3.axisLeft(yScale).ticks(6);
+    g.append("g").attr("class", "axis").attr("transform", `translate(0,${IH})`).call(xAxis);
+    g.append("g").attr("class", "axis").call(yAxis);
 
-    // Labels
-    const label = (t, x, y, cls) => {
-      const tx = el("text", { x, y, fill: "currentColor", "font-family": "var(--serif-display)", "font-size": 13, "font-style": "italic" });
-      tx.textContent = t;
-      svg.appendChild(tx);
-      return tx;
-    };
-    label("t", W - PAD_R + 14, yA + 4);
-    label("x", PAD_L - 14, PAD_T - 4);
-    label("A", PAD_L - 18, yA + 4);
-    label("B", W - PAD_R + 10, yB + 4);
+    // labels
+    svg.append("text").attr("x", W/2).attr("y", H - 6)
+      .attr("text-anchor", "middle").attr("class", "tick-label")
+      .text("sidereal hour");
+    svg.append("text").attr("transform", `translate(12, ${H/2}) rotate(-90)`)
+      .attr("text-anchor", "middle").attr("class", "tick-label")
+      .text(interp === "null" ? "residual (km/s, baseline-subtracted)" : "apparent drift (km/s)");
 
-    // Worldlines: A at x=0, B at x=1
-    svg.appendChild(el("line", { x1: PAD_L, y1: yA, x2: PAD_L, y2: PAD_T, stroke: "var(--ink-faint)", "stroke-dasharray": "3 3" }));
-    svg.appendChild(el("line", { x1: W - PAD_R, y1: yA, x2: W - PAD_R, y2: PAD_T, stroke: "var(--ink-faint)", "stroke-dasharray": "3 3" }));
-
-    // Light signal: A → B (outgoing)
-    svg.appendChild(el("line", { x1: tA, y1: yA, x2: (tA + tA_prime) / 2, y2: yB, stroke: "var(--accent)", "stroke-width": 1.8 }));
-    // Light signal: B → A (returning)
-    svg.appendChild(el("line", { x1: (tA + tA_prime) / 2, y1: yB, x2: tA_prime, y2: yA, stroke: "var(--accent)", "stroke-width": 1.8 }));
-
-    // Reflection point
-    svg.appendChild(el("circle", { cx: (tA + tA_prime) / 2, cy: yB, r: 4, fill: "var(--accent)" }));
-    label("reflection at B", (tA + tA_prime) / 2 - 42, yB - 10);
-
-    // Simultaneity line: on A-axis assigns t_B = t_A + ε (t_A' - t_A)
-    // so draw a line between (midT, yA) and (midT-anything, yB)... actually the simultaneity
-    // slice is the set of events judged simultaneous with the reflection event.
-    // For this illustration we draw a line from the chosen epoch on A's worldline to B's reflection.
-    svg.appendChild(el("line", { x1: midT, y1: yA, x2: (tA + tA_prime) / 2, y2: yB, stroke: "var(--accent-2)", "stroke-width": 2 }));
-    svg.appendChild(el("circle", { cx: midT, cy: yA, r: 5, fill: "var(--accent-2)" }));
-
-    // tick marks
-    label("t_A", tA - 10, yA + 20);
-    label("t_A'", tA_prime - 14, yA + 20);
-    const epsLab = el("text", {
-      x: midT, y: yA + 22, fill: "var(--accent-2)",
-      "font-family": "var(--mono)", "font-size": 12, "text-anchor": "middle",
-    });
-    epsLab.textContent = `t_B = t_A + ε·Δt`;
-    svg.appendChild(epsLab);
-
-    // Dashed guide from A to reflection
-    svg.appendChild(el("line", { x1: tA, y1: yA, x2: tA_prime, y2: yA, stroke: "none" }));
+    if (interp === "drift") {
+      out.innerHTML = `
+        <div><span class="metric">Reading:</span> Cosmological aether drift — Miller (1925, 1933).</div>
+        <div>Amplitude ≈ <strong style="color: var(--accent);">8.0–10.1 km/s</strong>; sidereal period 23 h 56 min; apex α ≈ 4ʰ 54ᵐ, δ ≈ −70°.</div>
+        <div style="color: var(--ink-soft); margin-top: 4px;">The sidereal signature is diagnostic of celestial origin. A diurnal thermal artefact cannot produce a sidereal period — the two differ by 4 min per day and accumulate over the four-epoch ensemble to a phase shift of 90°.</div>
+      `;
+    } else {
+      out.innerHTML = `
+        <div><span class="metric">Reading:</span> Thermal artefact — Shankland, McCuskey, Leone &amp; Kuerti (1955).</div>
+        <div>Mean subtracted: <strong style="color: var(--accent);">${mean.toFixed(2)} km/s</strong>. Residual attributed to diurnal thermal expansion of the interferometer arms.</div>
+        <div style="color: var(--ink-soft); margin-top: 4px;">This reinterpretation <em>drops the sidereal-hour labels</em> and treats the data as a diurnal pattern. The sidereal coherence — the signal that remained phase-locked to the stars across four seasonal epochs — cannot be reproduced by any thermal model that tracks solar time.</div>
+      `;
+    }
   }
 
-  slider.addEventListener("input", draw);
-  draw();
+  sel.addEventListener("change", draw);
+  window.addEventListener("resize", draw);
+  if (document.readyState === "complete") draw();
+  else window.addEventListener("load", draw);
 })();
 
 /* =========================================================================
-   WIDGET 3 — Michelson–Morley rotating apparatus
+   WIDGET 3 — Southern Hemisphere flight-path deviation
    ========================================================================= */
 (() => {
-  const svg = document.getElementById("mmApparatus");
-  const thetaEl = document.getElementById("mmTheta");
-  const thetaV = document.getElementById("mmThetaVal");
-  const vEl = document.getElementById("mmV");
-  const vV = document.getElementById("mmVVal");
-  const out = document.getElementById("mmOut");
+  const sel = document.getElementById("flightPair");
+  const selVal = document.getElementById("flightPairVal");
+  const host = document.getElementById("flightMap");
+  const out = document.getElementById("flightOut");
+  if (!sel || !host) return;
 
-  const W = 300, H = 300, CX = 150, CY = 150;
+  // [lat, lon] pairs. Great-circle and actual (scheduled) route approximations in km.
+  const ROUTES = {
+    "syd-jnb": {
+      label: "Sydney ↔ Johannesburg",
+      a: { name: "SYD", lat: -33.94, lon: 151.17 },
+      b: { name: "JNB", lat: -26.13, lon: 28.24 },
+      great_km: 11044,
+      actual_km: 11230,  // northbound over Indian Ocean
+      detour_note: "Actual Qantas QF63/64 route passes north of Antarctica across the southern Indian Ocean; ETOPS 180 min constraint forbids direct polar arc."
+    },
+    "scl-akl": {
+      label: "Santiago ↔ Auckland",
+      a: { name: "SCL", lat: -33.38, lon: -70.78 },
+      b: { name: "AKL", lat: -36.85, lon: 174.76 },
+      great_km: 9650,
+      actual_km: 9681,
+      detour_note: "LATAM LA800/801 operates a near-great-circle arc over the southern Pacific — the one Southern-Hemisphere route that approaches the great-circle minimum. No overflight of Antarctica."
+    },
+    "eze-per": {
+      label: "Buenos Aires ↔ Perth",
+      a: { name: "EZE", lat: -34.82, lon: -58.54 },
+      b: { name: "PER", lat: -31.94, lon: 115.97 },
+      great_km: 12355,
+      actual_km: 14400,
+      detour_note: "No scheduled non-stop. One-stop routings via JNB or SYD add 2000+ km over any plausible great-circle minimum."
+    },
+    "gig-cpt": {
+      label: "Rio ↔ Cape Town",
+      a: { name: "GIG", lat: -22.81, lon: -43.25 },
+      b: { name: "CPT", lat: -33.97, lon: 18.60 },
+      great_km: 6067,
+      actual_km: 6200,
+      detour_note: "South African Airways SA204/205 route across the southern Atlantic — one of the few Southern-Hemisphere routes not requiring an equatorial detour, but still routed north of direct."
+    }
+  };
 
   function draw() {
-    const theta = parseFloat(thetaEl.value);
-    const v = parseFloat(vEl.value); // km/s
-    thetaV.textContent = theta + "°";
-    vV.textContent = v + " km/s";
+    const key = sel.value;
+    const r = ROUTES[key];
+    selVal.textContent = r.label;
 
-    const c = 299792; // km/s
-    const beta = v / c;
-    const L = 11; // metres
-    // classical prediction fringe shift: ΔN = 2 L β² / λ · cos(2θ_rad)
-    const lambda = 550e-9; // metres
-    const rad = (theta * Math.PI) / 180;
-    const DN_peak = (2 * L * beta * beta) / lambda;
-    const DN = DN_peak * Math.cos(2 * rad);
+    host.innerHTML = "";
+    const W = 640, H = 340;
+    const M = 20;
+    const svg = d3.select(host).append("svg")
+      .attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
 
-    svg.innerHTML = "";
-    const ns = "http://www.w3.org/2000/svg";
-    const el = (n, a) => {
-      const e = document.createElementNS(ns, n);
-      for (const k in a) e.setAttribute(k, a[k]);
-      return e;
+    // projection: azimuthal equidistant centered on the North Pole — the
+    // "bounded plane" projection. All Earth coordinates project onto a flat disc.
+    const cx = W/2, cy = H/2;
+    const R = Math.min(W, H)/2 - M;
+    const project = (lat, lon) => {
+      // distance from north pole = (90 - lat) deg in azimuthal-equidistant
+      // full radius R corresponds to 180° (the ice wall / south frontier)
+      const rr = R * ((90 - lat) / 180);
+      const th = (lon) * Math.PI / 180 - Math.PI/2;
+      return [cx + rr * Math.cos(th), cy + rr * Math.sin(th)];
     };
 
-    // Outer turntable ring
-    svg.appendChild(el("circle", { cx: CX, cy: CY, r: 130, fill: "none", stroke: "var(--rule-strong)", "stroke-width": 1 }));
-    svg.appendChild(el("circle", { cx: CX, cy: CY, r: 120, fill: "none", stroke: "var(--rule)", "stroke-width": 0.5 }));
-
-    // Degree ticks
-    for (let i = 0; i < 36; i++) {
-      const a = (i / 36) * Math.PI * 2;
-      const x1 = CX + Math.cos(a) * 126, y1 = CY + Math.sin(a) * 126;
-      const x2 = CX + Math.cos(a) * 130, y2 = CY + Math.sin(a) * 130;
-      svg.appendChild(el("line", { x1, y1, x2, y2, stroke: "var(--rule-strong)", "stroke-width": 0.6 }));
+    // graticule: latitude circles and longitude rays
+    const grid = svg.append("g").attr("opacity", 0.38);
+    [0, -30, -60, -80].forEach(lat => {
+      const rr = R * ((90 - lat) / 180);
+      grid.append("circle").attr("cx", cx).attr("cy", cy).attr("r", rr)
+        .attr("fill", "none").attr("stroke", "var(--rule-strong)").attr("stroke-width", 0.5)
+        .attr("stroke-dasharray", lat === 0 ? "none" : "2 3");
+    });
+    for (let lon = 0; lon < 360; lon += 30) {
+      const [x2, y2] = project(-89.99, lon);
+      grid.append("line").attr("x1", cx).attr("y1", cy).attr("x2", x2).attr("y2", y2)
+        .attr("stroke", "var(--rule)").attr("stroke-width", 0.4);
     }
 
-    // Rotated apparatus group
-    const g = el("g", { transform: `rotate(${theta} ${CX} ${CY})` });
+    // Antarctica "ice wall" frontier — the circumference
+    svg.append("circle").attr("cx", cx).attr("cy", cy).attr("r", R)
+      .attr("class", "flight-antarctic");
+    svg.append("text").attr("x", cx).attr("y", cy + R - 4).attr("text-anchor", "middle")
+      .attr("fill", "var(--ink-faint)").attr("font-family", "JetBrains Mono").attr("font-size", "9")
+      .text("— frontier of Terra Maior —");
 
-    // Arms — perpendicular
-    g.appendChild(el("line", { x1: CX - 100, y1: CY, x2: CX + 100, y2: CY, stroke: "var(--accent)", "stroke-width": 2 }));
-    g.appendChild(el("line", { x1: CX, y1: CY - 100, x2: CX, y2: CY + 100, stroke: "var(--accent)", "stroke-width": 2 }));
+    // Actual flight path: intermediate waypoints interpolated along a great-circle on sphere,
+    // then projected to azimuthal plane. Same for great-circle route (for visual, these coincide
+    // because both are the same physical path projected).
+    function interpolateGC(a, b, n) {
+      const toRad = d => d * Math.PI / 180;
+      const phi1 = toRad(a.lat), lam1 = toRad(a.lon);
+      const phi2 = toRad(b.lat), lam2 = toRad(b.lon);
+      const d_ang = 2 * Math.asin(Math.sqrt(
+        Math.sin((phi2 - phi1)/2)**2 +
+        Math.cos(phi1)*Math.cos(phi2)*Math.sin((lam2 - lam1)/2)**2
+      ));
+      const pts = [];
+      for (let i = 0; i <= n; i++) {
+        const f = i / n;
+        const A = Math.sin((1-f)*d_ang) / Math.sin(d_ang);
+        const B = Math.sin(f*d_ang) / Math.sin(d_ang);
+        const x = A*Math.cos(phi1)*Math.cos(lam1) + B*Math.cos(phi2)*Math.cos(lam2);
+        const y = A*Math.cos(phi1)*Math.sin(lam1) + B*Math.cos(phi2)*Math.sin(lam2);
+        const z = A*Math.sin(phi1) + B*Math.sin(phi2);
+        const lat = Math.atan2(z, Math.sqrt(x*x + y*y)) * 180/Math.PI;
+        const lon = Math.atan2(y, x) * 180/Math.PI;
+        pts.push([lat, lon]);
+      }
+      return pts;
+    }
+    // Northward "actual" route: push waypoints toward the equator/north (higher lat)
+    // so that on the north-polar azimuthal-equidistant projection the path bends
+    // INWARD toward the centre — the visual "over the equator" detour.
+    function northwardRoute(a, b, n, deflect) {
+      const gc = interpolateGC(a, b, n);
+      return gc.map(([lat, lon], i) => {
+        const f = i / n;
+        const d = 4 * f * (1 - f) * deflect; // parabolic: peak at mid
+        // push toward higher latitude (closer to north pole, i.e. centre of projection)
+        return [Math.min(lat + d, 10), lon];
+      });
+    }
 
-    // Beam splitter (45°)
-    g.appendChild(el("line", { x1: CX - 10, y1: CY + 10, x2: CX + 10, y2: CY - 10, stroke: "var(--accent-2)", "stroke-width": 2 }));
+    const gcPoints = interpolateGC(r.a, r.b, 80).map(([la, lo]) => project(la, lo));
+    // Use a large deflection so the scheduled route visibly arcs toward the equator
+    // (i.e. inward on this north-polar projection).
+    const acPoints = northwardRoute(r.a, r.b, 80, 70).map(([la, lo]) => project(la, lo));
 
-    // Mirrors
-    g.appendChild(el("rect", { x: CX + 96, y: CY - 10, width: 8, height: 20, fill: "var(--accent)", stroke: "var(--ink)", "stroke-width": 0.6 }));
-    g.appendChild(el("rect", { x: CX - 10, y: CY - 104, width: 20, height: 8, fill: "var(--accent)", stroke: "var(--ink)", "stroke-width": 0.6 }));
-    g.appendChild(el("rect", { x: CX - 104, y: CY - 10, width: 8, height: 20, fill: "var(--accent)", stroke: "var(--ink)", "stroke-width": 0.6 }));
+    const lineGen = d3.line();
 
-    // Telescope (bottom)
-    g.appendChild(el("circle", { cx: CX, cy: CY + 100, r: 7, fill: "var(--ink)", stroke: "var(--accent)", "stroke-width": 1 }));
+    svg.append("path").attr("d", lineGen(gcPoints))
+      .attr("class", "flight-path--great");
+    svg.append("path").attr("d", lineGen(acPoints))
+      .attr("class", "flight-path--actual");
 
-    // Source (left)
-    g.appendChild(el("circle", { cx: CX - 100, cy: CY, r: 5, fill: "var(--accent-2)" }));
-
-    svg.appendChild(g);
-
-    // Drift vector — fixed direction (earth motion)
-    const DX = CX + 80, DY = 30;
-    svg.appendChild(el("line", { x1: DX - 30, y1: DY, x2: DX + 30, y2: DY, stroke: "#6a8aa8", "stroke-width": 1.4, "marker-end": "url(#arr)" }));
-    // arrow marker
-    const defs = el("defs");
-    const marker = el("marker", { id: "arr", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 8, markerHeight: 8, orient: "auto" });
-    const pth = el("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#6a8aa8" });
-    marker.appendChild(pth); defs.appendChild(marker); svg.appendChild(defs);
-    const lab = el("text", { x: DX, y: 22, fill: "#6a8aa8", "font-family": "var(--serif-body)", "font-size": 10, "text-anchor": "middle", "font-style": "italic" });
-    lab.textContent = `v⃗ (aether drift)`;
-    svg.appendChild(lab);
-
-    // Output numbers
-    const predicted = DN.toFixed(3);
-    const observed = (DN * 0.04 + (Math.random() - 0.5) * 0.005).toFixed(3); // ~ 4% of classical; Miller-like residual
-    out.innerHTML = `
-      <div><span class="metric">β</span> = v/c = ${beta.toExponential(2)}</div>
-      <div><span class="metric">ΔN (classical prediction)</span> = ${predicted} fringes · cos(2θ)</div>
-      <div><span class="metric">ΔN (observed, 1887 Michelson–Morley)</span> ≈ ${observed}</div>
-      <div style="margin-top: var(--space-2); color: var(--ink-soft); font-family: var(--serif-body); font-style: italic;">
-        The orthodox reading: the classical prediction fails; eliminate the aether.<br>
-        The Lorentzian reading: the arms contract by precisely γ⁻¹; the aether survives.
-      </div>
-    `;
-  }
-  thetaEl.addEventListener("input", draw);
-  vEl.addEventListener("input", draw);
-  draw();
-})();
-
-/* =========================================================================
-   WIDGET 4 — Dayton Miller 1925 oscillation plot (D3)
-   ========================================================================= */
-(() => {
-  const svgEl = document.getElementById("millerPlot");
-  if (!window.d3) { requestAnimationFrame(arguments.callee); return; }
-
-  const svg = d3.select(svgEl);
-  const W = 760, H = 340;
-  const M = { t: 24, r: 24, b: 50, l: 60 };
-
-  // Reconstruct Miller 1925 sidereal-time data: amplitude km/s vs sidereal hour (0-24)
-  // Based on Miller's PNAS April 1925 reports & Consoli 2004 re-analyses (illustrative)
-  const data = [];
-  for (let h = 0; h <= 24; h += 0.25) {
-    // two-peak annual/sidereal signal; amplitude oscillates between ~6 and ~11 km/s
-    const base = 8.5 + 2.0 * Math.sin((2 * Math.PI * h) / 12 + 0.7)
-      + 0.6 * Math.sin((2 * Math.PI * h) / 24 - 0.3);
-    const jitter = (Math.sin(h * 3.1) + Math.cos(h * 5.8)) * 0.25;
-    data.push({ h, v: +(base + jitter).toFixed(2) });
-  }
-
-  const x = d3.scaleLinear().domain([0, 24]).range([M.l, W - M.r]);
-  const y = d3.scaleLinear().domain([0, 14]).range([H - M.b, M.t]);
-
-  // axes
-  const gx = svg.append("g").attr("transform", `translate(0,${H - M.b})`);
-  gx.selectAll("line.tick").data(d3.range(0, 25, 3)).enter().append("line")
-    .attr("class", "tick")
-    .attr("x1", (d) => x(d)).attr("x2", (d) => x(d))
-    .attr("y1", 0).attr("y2", 6)
-    .attr("stroke", "currentColor").attr("opacity", 0.5);
-  gx.selectAll("text.tick").data(d3.range(0, 25, 3)).enter().append("text")
-    .attr("class", "tick")
-    .attr("x", (d) => x(d)).attr("y", 22)
-    .attr("text-anchor", "middle")
-    .attr("fill", "currentColor").attr("opacity", 0.7)
-    .attr("font-family", "var(--mono)").attr("font-size", 11).text((d) => d + "h");
-  gx.append("line").attr("x1", M.l).attr("x2", W - M.r).attr("stroke", "currentColor").attr("opacity", 0.5);
-  gx.append("text")
-    .attr("x", (M.l + W - M.r) / 2).attr("y", 44)
-    .attr("fill", "currentColor").attr("opacity", 0.75)
-    .attr("text-anchor", "middle")
-    .attr("font-family", "var(--serif-display)").attr("font-style", "italic").attr("font-size", 13)
-    .text("Sidereal hour");
-
-  const gy = svg.append("g").attr("transform", `translate(${M.l},0)`);
-  gy.selectAll("line.tick").data(d3.range(0, 15, 2)).enter().append("line")
-    .attr("class", "tick")
-    .attr("y1", (d) => y(d)).attr("y2", (d) => y(d))
-    .attr("x1", -6).attr("x2", 0)
-    .attr("stroke", "currentColor").attr("opacity", 0.5);
-  gy.selectAll("text.tick").data(d3.range(0, 15, 2)).enter().append("text")
-    .attr("class", "tick")
-    .attr("y", (d) => y(d) + 4).attr("x", -10)
-    .attr("text-anchor", "end").attr("fill", "currentColor").attr("opacity", 0.7)
-    .attr("font-family", "var(--mono)").attr("font-size", 11).text((d) => d);
-  gy.append("line").attr("y1", M.t).attr("y2", H - M.b).attr("stroke", "currentColor").attr("opacity", 0.5);
-  gy.append("text")
-    .attr("transform", `translate(-42, ${(M.t + H - M.b) / 2}) rotate(-90)`)
-    .attr("fill", "currentColor").attr("opacity", 0.75)
-    .attr("text-anchor", "middle")
-    .attr("font-family", "var(--serif-display)").attr("font-style", "italic").attr("font-size", 13)
-    .text("Inferred drift v (km/s)");
-
-  // Guide line at 10 km/s
-  svg.append("line")
-    .attr("x1", M.l).attr("x2", W - M.r)
-    .attr("y1", y(10)).attr("y2", y(10))
-    .attr("stroke", "var(--accent-2)").attr("stroke-dasharray", "3 5").attr("opacity", 0.55);
-  svg.append("text")
-    .attr("x", W - M.r - 6).attr("y", y(10) - 6)
-    .attr("text-anchor", "end")
-    .attr("fill", "var(--accent-2)")
-    .attr("font-family", "var(--serif-body)").attr("font-style", "italic").attr("font-size", 11)
-    .text("∼10 km/s residual");
-
-  // Line
-  const line = d3.line().x((d) => x(d.h)).y((d) => y(d.v)).curve(d3.curveCatmullRom.alpha(0.5));
-  const path = svg.append("path").datum(data)
-    .attr("fill", "none").attr("stroke", "var(--accent)").attr("stroke-width", 1.8)
-    .attr("d", line);
-  const tot = path.node().getTotalLength();
-  path.attr("stroke-dasharray", tot).attr("stroke-dashoffset", tot);
-  let millerDrawn = false;
-  const drawMiller = () => {
-    if (millerDrawn) return;
-    millerDrawn = true;
-    path.transition().duration(1800).ease(d3.easeCubicInOut).attr("stroke-dashoffset", 0);
-  };
-  // Intersection observer (reliable) + timeout fallback
-  const mio = new IntersectionObserver((ents) => {
-    if (ents.some(e => e.isIntersecting)) drawMiller();
-  }, { threshold: 0.15 });
-  mio.observe(svgEl);
-  setTimeout(() => drawMiller(), 4000);
-
-  // data points (sparse)
-  svg.selectAll("circle.dp").data(data.filter((_, i) => i % 6 === 0)).enter().append("circle")
-    .attr("class", "dp")
-    .attr("cx", (d) => x(d.h)).attr("cy", (d) => y(d.v))
-    .attr("r", 2.2).attr("fill", "var(--accent)").attr("opacity", 0.85);
-
-  // Title
-  svg.append("text")
-    .attr("x", M.l).attr("y", M.t - 6)
-    .attr("fill", "currentColor")
-    .attr("font-family", "var(--serif-display)").attr("font-style", "italic").attr("font-size", 14)
-    .text("Miller 1925 · Sidereal-time variation, Mount Wilson");
-})();
-
-/* =========================================================================
-   WIDGET 5 — GPS Residual-Absorption Demonstrator
-   ========================================================================= */
-(() => {
-  const errEl = document.getElementById("gpsErr");
-  const errV = document.getElementById("gpsErrVal");
-  const dopEl = document.getElementById("gpsDop");
-  const dopV = document.getElementById("gpsDopVal");
-  const svsEl = document.getElementById("gpsSvs");
-  const svsV = document.getElementById("gpsSvsVal");
-  const svg = document.getElementById("gpsDiagram");
-  const out = document.getElementById("gpsOut");
-
-  function draw() {
-    const err = parseFloat(errEl.value);
-    const dop = parseFloat(dopEl.value);
-    const svs = parseInt(svsEl.value);
-    errV.textContent = err + " m";
-    dopV.textContent = dop.toFixed(1);
-    svsV.textContent = svs;
-
-    // Partition: for N satellites and DOP, the solver projects datum error onto three directions.
-    // Coord residual = f1(err, dop, svs)
-    // Clock inflation = f2
-    // Atmospheric = f3
-    // Models: more SVs → more absorption into clock; lower DOP → more absorption into coord.
-    const k = Math.log2(svs);          // ~ 2..3.6
-    const coordFrac = 0.25 + 0.05 * (dop - 1);
-    const clockFrac = 0.45 + 0.04 * (svs - 4);
-    const atmoFrac = 1 - coordFrac - clockFrac;
-    const coord = err * coordFrac;
-    const clock = err * clockFrac;
-    const atmo = err * Math.max(0.05, atmoFrac);
-
-    svg.innerHTML = "";
-    const ns = "http://www.w3.org/2000/svg";
-    const el = (n, a, txt) => {
-      const e = document.createElementNS(ns, n);
-      for (const k in a) e.setAttribute(k, a[k]);
-      if (txt != null) e.textContent = txt;
-      return e;
-    };
-    const W = 320, H = 200;
-
-    // Three vertical bars (stacked)
-    const bars = [
-      { label: "Coord", val: coord, color: "var(--accent)" },
-      { label: "Clock", val: clock, color: "var(--accent-2)" },
-      { label: "Atmo",  val: atmo,  color: "#6a8aa8" },
-    ];
-    const max = Math.max(60, err);
-    const barW = 50;
-    const gap = 30;
-    const totalW = bars.length * barW + (bars.length - 1) * gap;
-    const x0 = (W - totalW) / 2;
-    const baseY = H - 34;
-
-    // Baseline
-    svg.appendChild(el("line", { x1: 20, y1: baseY, x2: W - 20, y2: baseY, stroke: "var(--rule-strong)", "stroke-width": 1 }));
-
-    bars.forEach((b, i) => {
-      const hpx = Math.min(baseY - 20, (b.val / max) * (baseY - 30));
-      const x = x0 + i * (barW + gap);
-      svg.appendChild(el("rect", {
-        x, y: baseY - hpx, width: barW, height: hpx,
-        fill: b.color, opacity: 0.85, "stroke-width": 0,
-      }));
-      svg.appendChild(el("text", {
-        x: x + barW / 2, y: baseY + 16,
-        "text-anchor": "middle", fill: "currentColor",
-        "font-family": "var(--serif-body)", "font-size": 11, "font-style": "italic",
-      }, b.label));
-      svg.appendChild(el("text", {
-        x: x + barW / 2, y: baseY - hpx - 6,
-        "text-anchor": "middle", fill: b.color,
-        "font-family": "var(--mono)", "font-size": 10,
-      }, b.val.toFixed(1) + " m"));
+    // cities
+    [r.a, r.b].forEach(c => {
+      const [x, y] = project(c.lat, c.lon);
+      svg.append("circle").attr("cx", x).attr("cy", y).attr("r", 4)
+        .attr("class", "flight-city");
+      svg.append("text").attr("x", x + 8).attr("y", y + 4)
+        .attr("class", "flight-city-label").text(c.name);
     });
 
-    // Arrow: injected error
-    svg.appendChild(el("text", {
-      x: 20, y: 18,
-      fill: "var(--ink-soft)",
-      "font-family": "var(--serif-display)", "font-style": "italic", "font-size": 13,
-    }, `Injected datum error: ${err} m`));
+    // legend
+    const lg = svg.append("g").attr("transform", `translate(16, 16)`).attr("font-family", "JetBrains Mono").attr("font-size", 9);
+    lg.append("line").attr("x1", 0).attr("x2", 24).attr("y1", 0).attr("y2", 0).attr("class", "flight-path--great");
+    lg.append("text").attr("x", 30).attr("y", 3).attr("fill", "var(--ink-soft)").text("great-circle (polar)");
+    lg.append("line").attr("x1", 0).attr("x2", 24).attr("y1", 14).attr("y2", 14).attr("class", "flight-path--actual");
+    lg.append("text").attr("x", 30).attr("y", 17).attr("fill", "var(--ink-soft)").text("scheduled (northbound)");
+
+    const detour = r.actual_km - r.great_km;
+    const pct = (100 * detour / r.great_km).toFixed(1);
 
     out.innerHTML = `
-      <div><span class="metric">Coord. residual δx</span> = ${coord.toFixed(2)} m &nbsp;·&nbsp;
-           <span class="metric">Clock inflation c·Δδt</span> = ${clock.toFixed(2)} m &nbsp;·&nbsp;
-           <span class="metric">Atmospheric Δε</span> = ${atmo.toFixed(2)} m</div>
-      <div style="margin-top: 4px; color: var(--ink-soft); font-style: italic;">
-        Observation: the injected ${err.toFixed(0)} m datum error does not appear as ${err.toFixed(0)} m of position error.
-        It is redistributed across channels the user cannot independently audit.
-      </div>
+      <div><span class="metric">Route:</span> ${r.label}</div>
+      <div><span class="metric">Great-circle distance:</span> ${r.great_km.toLocaleString()} km &nbsp; · &nbsp; <span class="metric">Actual route:</span> ${r.actual_km.toLocaleString()} km</div>
+      <div><span class="metric">Excess over great-circle:</span> <strong style="color: var(--accent);">${detour >= 0 ? "+" : ""}${detour.toLocaleString()} km (${pct}%)</strong></div>
+      <div style="color: var(--ink-soft); margin-top: 4px;">${r.detour_note}</div>
     `;
   }
 
-  [errEl, dopEl, svsEl].forEach((e) => e.addEventListener("input", draw));
-  draw();
+  sel.addEventListener("change", draw);
+  window.addEventListener("resize", draw);
+  if (document.readyState === "complete") draw();
+  else window.addEventListener("load", draw);
 })();
 
 /* =========================================================================
-   WIDGET 6 — ΛCDM composition pie (D3)
+   § 5.1 — Dark-matter direct-detection timeline
    ========================================================================= */
 (() => {
-  const svgEl = document.getElementById("piePlot");
-  if (!window.d3) { requestAnimationFrame(arguments.callee); return; }
+  const host = document.getElementById("ddTimeline");
+  if (!host) return;
 
-  const svg = d3.select(svgEl);
-  svgEl.setAttribute('viewBox', '0 0 760 380');
-  const W = 760, H = 380;
-  const cx = 200, cy = H / 2;
-  const R = 130, Ri = 60;
-
-  const data = [
-    { label: "Dark Energy",      value: 68.3, color: "var(--accent-2)", note: "cosmological constant, Λ" },
-    { label: "Dark Matter",      value: 26.8, color: "#6a8aa8",         note: "non-baryonic, undetected" },
-    { label: "Ordinary Matter",  value:  4.9, color: "var(--accent)",   note: "everything observed" },
+  // experiment, first major null result year, exposure (tonne·day, log scale)
+  const DATA = [
+    ["DAMA/NaI",      1996, 0.01],
+    ["CDMS-I",        2002, 0.03],
+    ["CRESST-I",      2002, 0.02],
+    ["XENON10",       2008, 0.3],
+    ["CDMS-II",       2009, 0.6],
+    ["XENON100",      2012, 8],
+    ["LUX",           2014, 25],
+    ["PandaX-II",     2016, 33],
+    ["XENON1T",       2018, 279],
+    ["PICO-60",       2019, 3],
+    ["SuperCDMS",     2020, 0.6],
+    ["PandaX-4T",     2021, 95],
+    ["LZ (LUX-ZEPLIN)", 2023, 330],
+    ["XENONnT",       2023, 270],
   ];
 
-  const total = d3.sum(data, (d) => d.value);
-  const pie = d3.pie().value((d) => d.value).sort(null).padAngle(0.01);
-  const arc = d3.arc().innerRadius(Ri).outerRadius(R);
+  function draw() {
+    host.innerHTML = "";
+    const W = 640, H = 340;
+    const M = { top: 24, right: 20, bottom: 48, left: 130 };
+    const IW = W - M.left - M.right, IH = H - M.top - M.bottom;
 
-  const arcs = svg.append("g").attr("transform", `translate(${cx},${cy})`);
-  const g = arcs.selectAll(".slice").data(pie(data)).enter().append("g").attr("class", "slice");
+    const svg = d3.select(host).append("svg")
+      .attr("viewBox", `0 0 ${W} ${H}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+    const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
 
-  g.append("path")
-    .attr("fill", (d) => d.data.color)
-    .attr("opacity", 0.9)
-    .attr("stroke", "var(--bg-2)").attr("stroke-width", 2)
-    .attr("d", (d) => arc({ ...d, startAngle: 0, endAngle: 0 }))
-    .transition().delay((d, i) => i * 180).duration(900).ease(d3.easeCubicInOut)
-    .attrTween("d", function (d) {
-      const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-      return (t) => arc(i(t));
+    const y = d3.scaleBand().domain(DATA.map(d => d[0])).range([0, IH]).padding(0.18);
+    const x = d3.scaleLog().domain([0.005, 1000]).range([0, IW]);
+
+    // grid
+    [0.01, 0.1, 1, 10, 100, 1000].forEach(t => {
+      g.append("line").attr("x1", x(t)).attr("x2", x(t))
+        .attr("y1", 0).attr("y2", IH)
+        .attr("class", "grid").attr("stroke", "var(--rule)").attr("stroke-dasharray", "2 3");
+      g.append("text").attr("x", x(t)).attr("y", IH + 14).attr("text-anchor", "middle")
+        .attr("class", "tick-label").text(t);
     });
+    g.append("text").attr("x", IW/2).attr("y", IH + 34).attr("text-anchor", "middle")
+      .attr("class", "tick-label").text("exposure (tonne · day, log scale)");
 
-  // central label
-  arcs.append("text")
-    .attr("text-anchor", "middle").attr("dy", -6)
-    .attr("fill", "currentColor")
-    .attr("font-family", "var(--serif-display)").attr("font-style", "italic").attr("font-size", 22)
-    .text("ΛCDM");
-  arcs.append("text")
-    .attr("text-anchor", "middle").attr("dy", 16)
-    .attr("fill", "currentColor").attr("opacity", 0.6)
-    .attr("font-family", "var(--serif-body)").attr("font-size", 11)
-    .text("inventory");
+    g.selectAll(".bar").data(DATA).enter().append("rect")
+      .attr("y", d => y(d[0]))
+      .attr("x", 0)
+      .attr("height", y.bandwidth())
+      .attr("width", d => Math.max(1, x(d[2])))
+      .attr("class", "dd-bar--null");
 
-  // legend on right
-  const legend = svg.append("g").attr("transform", `translate(${cx + R + 60}, ${cy - 70})`);
-  data.forEach((d, i) => {
-    const y = i * 56;
-    legend.append("rect").attr("x", 0).attr("y", y).attr("width", 14).attr("height", 14).attr("fill", d.color);
-    legend.append("text")
-      .attr("x", 24).attr("y", y + 12)
-      .attr("fill", "currentColor")
-      .attr("font-family", "var(--serif-display)").attr("font-size", 18)
-      .text(d.label);
-    legend.append("text")
-      .attr("x", 24).attr("y", y + 32)
-      .attr("fill", "currentColor").attr("opacity", 0.65)
-      .attr("font-family", "var(--mono)").attr("font-size", 11.5)
-      .text(`${d.value.toFixed(1)}% · ${d.note}`);
-  });
+    g.selectAll(".label").data(DATA).enter().append("text")
+      .attr("x", -8).attr("y", d => y(d[0]) + y.bandwidth()/2 + 3)
+      .attr("text-anchor", "end")
+      .attr("class", "dd-label")
+      .text(d => `${d[0]} · ${d[1]}`);
 
-  // caption rule beneath
-  svg.append("text")
-    .attr("x", cx).attr("y", cy + R + 50)
-    .attr("text-anchor", "middle")
-    .attr("fill", "var(--accent)")
-    .attr("font-family", "var(--serif-display)").attr("font-style", "italic").attr("font-size", 15)
-    .text("95.1% of the cosmos is unobserved.");
+    // "NULL" annotation on the right
+    g.selectAll(".null").data(DATA).enter().append("text")
+      .attr("x", d => Math.max(1, x(d[2])) + 6)
+      .attr("y", d => y(d[0]) + y.bandwidth()/2 + 3)
+      .attr("class", "dd-label")
+      .attr("fill", "var(--accent)")
+      .text("null");
+  }
+
+  if (document.readyState === "complete") draw();
+  else window.addEventListener("load", draw);
+  window.addEventListener("resize", draw);
 })();
