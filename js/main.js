@@ -37,9 +37,13 @@
   fadeTargets.forEach((el) => el.classList.add('fade-up'));
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) {
-    fadeTargets.forEach((el) => el.classList.add('in'));
-  } else if ('IntersectionObserver' in window) {
+  const isNarrow = window.matchMedia('(max-width: 900px)').matches;
+
+  // Only opt into fade animation on desktop-width viewports with motion allowed
+  // and IntersectionObserver support. On mobile or any uncertainty, content is
+  // visible by default (CSS handles the safety net).
+  if (!reduceMotion && !isNarrow && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-fades');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
@@ -47,11 +51,15 @@
           io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.04, rootMargin: '0px 0px 10% 0px' });
     fadeTargets.forEach((el) => io.observe(el));
-  } else {
-    fadeTargets.forEach((el) => el.classList.add('in'));
+
+    // Safety net: after 2s, force-reveal anything the observer hasn't caught.
+    setTimeout(() => {
+      fadeTargets.forEach((el) => el.classList.add('in'));
+    }, 2000);
   }
+  // else: CSS default keeps .fade-up fully visible — no JS action needed.
 
   /* ---------- Side-rail + mobile nav active highlight ---------- */
   const sideNav = document.getElementById('side-rail') || document.getElementById('side-nav');

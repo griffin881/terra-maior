@@ -2004,14 +2004,24 @@ code { font-family: var(--mono); font-size: .88em; background: rgba(201,161,74,.
 html, body { overflow-x: hidden; }
 
 /* ========================================================================
-   Fade-in on scroll
+   Fade-in on scroll — content-first: visible by default, animated only
+   when JS has confirmed IntersectionObserver support by setting
+   <html class="js-fades">. If JS never runs, or the observer misfires
+   (common on some mobile browsers), content remains fully visible.
    ======================================================================== */
-.fade-up {
+.fade-up { opacity: 1; transform: none; }
+.js-fades .fade-up {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity .7s ease, transform .7s ease;
 }
-.fade-up.in { opacity: 1; transform: none; }
+.js-fades .fade-up.in { opacity: 1; transform: none; }
+
+/* Mobile safety net — never hide editorial content on small viewports,
+   regardless of observer state. */
+@media (max-width: 900px) {
+  .js-fades .fade-up { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
 
 /* ========================================================================
    RESPONSIVE
