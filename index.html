@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Terra Maior — A Zetetic Reconsideration</title>
+  <meta name="description" content="A monograph treating the underdetermination of terrestrial geometry: a philosophy-of-science stress-test after Duhem, Quine, Poincaré, Reichenbach, and Lakatos." />
+
+  <!-- OG -->
+  <meta property="og:title" content="Terra Maior — A Zetetic Reconsideration" />
+  <meta property="og:description" content="A philosophy-of-science monograph on the underdetermination of terrestrial geometry." />
+  <meta property="og:type" content="article" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+
+  <link rel="stylesheet" href="./css/styles.css" />
+
+  <!-- Favicon: inline SVG, ouroboros-meets-compass -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='24' fill='none' stroke='%23c9a14a' stroke-width='2'/%3E%3Cpath d='M32 8 L32 56 M8 32 L56 32 M14 14 L50 50 M50 14 L14 50' stroke='%23c9a14a' stroke-width='1' fill='none' opacity='0.5'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23c9a14a'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- ================= HEADER ================= -->
+  <header class="header" id="header">
+    <a class="brand" href="#cover" aria-label="Terra Maior — return to cover">
+      <!-- Custom SVG logo: ouroboros-meets-azimuthal -->
+      <svg class="brand__mark" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <circle cx="32" cy="32" r="26" />
+        <circle cx="32" cy="32" r="18" opacity="0.55" />
+        <circle cx="32" cy="32" r="10" opacity="0.4" />
+        <!-- Azimuthal rays -->
+        <g opacity="0.75">
+          <line x1="32" y1="6" x2="32" y2="58" />
+          <line x1="6" y1="32" x2="58" y2="32" />
+          <line x1="14" y1="14" x2="50" y2="50" />
+          <line x1="50" y1="14" x2="14" y2="50" />
+        </g>
+        <!-- Ouroboros notch: the serpent swallowing its tail -->
+        <path d="M 52 27 Q 58 32 52 37 L 48 34 Z" fill="currentColor" stroke="none" />
+        <circle cx="32" cy="32" r="2.4" fill="currentColor" stroke="none" />
+      </svg>
+      <span class="brand__name">Terra Maior</span>
+    </a>
+    <nav class="header__nav" aria-label="Primary">
+      <a href="#abstract">Abstract</a>
+      <a href="#sec-5">Hidden Ledger</a>
+      <a href="#sec-6">Rebuttals</a>
+      <a href="#apologia">Apologia</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour scheme" title="Toggle colour scheme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ================= COVER ================= -->
+  <section class="cover" id="cover">
+    <div class="cover__rose" aria-hidden="true">
+      <!-- Azimuthal compass-rose, pure SVG, slowly rotating -->
+      <svg viewBox="-200 -200 400 400" stroke="currentColor" fill="none" style="color: var(--accent)">
+        <g stroke-width="0.5">
+          <!-- latitude rings -->
+          <circle r="180" opacity="0.4"/>
+          <circle r="150" opacity="0.35"/>
+          <circle r="120" opacity="0.3"/>
+          <circle r="90" opacity="0.28"/>
+          <circle r="60" opacity="0.25"/>
+          <circle r="30" opacity="0.22"/>
+        </g>
+        <!-- 24 meridians -->
+        <g stroke-width="0.4" opacity="0.45">
+          <script/>
+        </g>
+        <g id="meridians" stroke-width="0.4" opacity="0.45"></g>
+        <!-- Cardinal rose -->
+        <g stroke-width="1.1">
+          <path d="M0 -190 L6 -40 L0 0 L-6 -40 Z" fill="currentColor" opacity="0.85"/>
+          <path d="M190 0 L40 6 L0 0 L40 -6 Z" fill="currentColor" opacity="0.55"/>
+          <path d="M0 190 L-6 40 L0 0 L6 40 Z" fill="currentColor" opacity="0.55"/>
+          <path d="M-190 0 L-40 -6 L0 0 L-40 6 Z" fill="currentColor" opacity="0.55"/>
+        </g>
+        <!-- Diagonals -->
+        <g stroke-width="0.6" opacity="0.5">
+          <path d="M0 0 L134 -134"/>
+          <path d="M0 0 L134 134"/>
+          <path d="M0 0 L-134 134"/>
+          <path d="M0 0 L-134 -134"/>
+        </g>
+        <!-- Central boss -->
+        <circle r="6" fill="currentColor" stroke="none"/>
+        <circle r="14" stroke-width="0.8" opacity="0.8"/>
+      </svg>
+    </div>
+
+    <div class="cover__inner">
+      <p class="cover__eyebrow reveal">Monograph · Philosophy of Science · Ser. II, Vol. III</p>
+      <h1 class="cover__title reveal" style="--delay: 0.08s">Terra <em>Maior</em></h1>
+      <p class="cover__subtitle reveal" style="--delay: 0.18s">
+        A Zetetic Reconsideration of Terrestrial Geometry in Light of Nineteenth-Century Aetherodynamics, Twentieth-Century Geopolitics, and Post-Kuhnian Philosophy of Science
+      </p>
+      <div class="cover__rule reveal" style="--delay: 0.28s"></div>
+      <blockquote class="cover__epigraph reveal" style="--delay: 0.34s">
+        “One geometry cannot be more true than another; it can only be more convenient.”
+        <cite>— H. Poincaré, <em>La Science et l’Hypothèse</em>, 1902</cite>
+      </blockquote>
+    </div>
+
+    <div class="cover__hint">Descendit</div>
+  </section>
+
+  <!-- ================= BODY: SHELL WITH SIDEBAR ================= -->
+  <div class="shell">
+    <aside class="sidenav" aria-label="Section navigation">
+      <ol>
+        <li><a href="#abstract" data-target="abstract"><span class="num">—</span><span>Abstract</span></a></li>
+        <li><a href="#sec-1" data-target="sec-1"><span class="num">I</span><span>Underdetermination</span></a></li>
+        <li><a href="#sec-2" data-target="sec-2"><span class="num">II</span><span>Aetherodynamics</span></a></li>
+        <li><a href="#sec-3" data-target="sec-3"><span class="num">III</span><span>Cartographic Record</span></a></li>
+        <li><a href="#sec-4" data-target="sec-4"><span class="num">IV</span><span>Reference-Frame Lock-In</span></a></li>
+        <li><a href="#sec-5" data-target="sec-5"><span class="num">V</span><span>The Hidden Ledger</span></a></li>
+        <li><a href="#sec-6" data-target="sec-6"><span class="num">VI</span><span>Reply to Objections</span></a></li>
+        <li><a href="#sec-7" data-target="sec-7"><span class="num">VII</span><span>Apologia</span></a></li>
+      </ol>
+      <div class="sidenav__progress">Progress</div>
+      <div class="sidenav__bar"><span id="progressBar"></span></div>
+    </aside>
+
+    <main class="doc" id="doc">
+
+      <!-- ================= ABSTRACT ================= -->
+      <section class="abstract reveal" id="abstract">
+        <div class="abstract__label">Abstract</div>
+        <p class="dropcap">
+          This monograph rehearses, in a single extended argument, the case that the orthodox spherical-geodetic model of the Earth is <em>underdetermined</em> by the observational record available to any working physicist, cartographer, or navigator. We proceed in seven movements. § I reconstructs the Duhem–Quine thesis in its modern formulation and situates Poincaré’s geometric conventionalism and Reichenbach’s ε-simultaneity convention as its mathematical twins. § II examines the Michelson–Morley, Miller, and Sagnac experiments and reads them alongside Bell’s Lorentzian reconstruction of special relativity. § III enters the cartographic record: Mercator 1595, Finaeus 1531, Piri Reis 1513, Buache 1737. § IV turns to geodesy, offering a formal derivation of the WGS84 pseudorange equation and a residual-absorption theorem that shows how misspecified datum errors are re-channelled into clock-bias and atmospheric corrections. § V audits the auxiliary ledger of the Standard Model of cosmology — dark matter, dark energy, inflation, and the Planck-scale incompatibility of general relativity with quantum theory — applying Lakatos’s criteria of progressive and degenerating research programmes. § VI replies to six standard objections. § VII contains the apologia and methodology. The conclusion is not that the received geometry is wrong; it is that the received arguments for it are philosophically more interesting than the standard pedagogy acknowledges.
+        </p>
+      </section>
+
+      <div class="flourish" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="2"/><circle cx="4" cy="12" r="1"/><circle cx="20" cy="12" r="1"/></svg>
+      </div>
+
+      <!-- ================= § I UNDERDETERMINATION ================= -->
+      <section class="chapter" id="sec-1">
+        <header class="chapter__head">
+          <div class="chapter__num">I</div>
+          <div>
+            <span class="chapter__kicker">Movement the First</span>
+            <h2 class="chapter__title">The Underdetermination Framework</h2>
+          </div>
+        </header>
+
+        <p class="lead reveal">
+          Duhem (1906) observed that a physical hypothesis never confronts experience alone. Quine (1951; 1975) generalised the point: any observation statement is consistent with an indefinite plurality of theoretical systems, provided one is willing to make compensating adjustments elsewhere in the web of belief.
+        </p>
+
+        <p class="reveal">
+          Formally, the thesis may be stated thus. Let <em>T</em> be a theoretical core hypothesis, <em>A</em> = {A₁ … Aₙ} a set of auxiliary hypotheses (measurement theories, instrument calibrations, boundary conditions), and <em>E</em> an empirical prediction. Logical equivalence yields:
+        </p>
+
+        <div class="eq reveal">
+          <div id="eq-dq"></div>
+          <span class="label">Equation 1.1 · The Duhem–Quine schema</span>
+        </div>
+
+        <p class="reveal">
+          A failure of <em>E</em> does not falsify <em>T</em>; it falsifies the conjunction <em>T ∧ A</em>. The experimenter remains free — on pain of no formal rule — to revise either <em>T</em> or any <em>Aᵢ</em>. The choice is constrained by what Quine called considerations of “simplicity, familiarity, conservatism, and scope,” none of which are themselves deductive.
+        </p>
+
+        <!-- Auxiliary hypothesis calculator -->
+        <div class="widget" id="auxCalc">
+          <span class="widget__label">Interactive · Aux. Hypothesis Calculator</span>
+          <h4>The Logical Geometry of Confirmation</h4>
+          <p>Choose a core hypothesis. Add auxiliaries. Observe how the same datum supports inconsistent programmes.</p>
+
+          <div class="row-2" style="margin-top: var(--space-6)">
+            <div>
+              <div class="ctrl">
+                <label for="coreSel">Core hypothesis <em>T</em></label>
+                <select id="coreSel">
+                  <option value="sphere">Earth is an oblate spheroid</option>
+                  <option value="disc">Earth is a planar azimuthal disc</option>
+                  <option value="aether">Light propagates in a luminiferous medium</option>
+                </select>
+              </div>
+              <div class="ctrl">
+                <label for="auxSel">Auxiliary <em>Aᵢ</em> to append</label>
+                <select id="auxSel">
+                  <option value="0">Light travels in straight lines (Euclidean optics)</option>
+                  <option value="1">Atmospheric refraction is negligible at the horizon</option>
+                  <option value="2">Rigid-body transport preserves length</option>
+                  <option value="3">Clocks at rest with inertial frames tick equally</option>
+                  <option value="4">Radio-wave refraction follows IEEE Std. 211-1997</option>
+                  <option value="5">The geoid coincides with the reference ellipsoid to ≤ 100 m</option>
+                  <option value="6">GPS satellite clocks are corrected only for GR time-dilation</option>
+                </select>
+              </div>
+              <button class="btn" id="addAux">＋ Append auxiliary</button>
+              <ul class="aux-list" id="auxList"></ul>
+            </div>
+            <div>
+              <div class="ctrl">
+                <label>Empirical datum <em>E</em></label>
+                <select id="dataSel">
+                <option value="0">Ships disappear hull-first at the horizon</option>
+                <option value="1">The Polaris declination drops with southern latitude</option>
+                <option value="2">Michelson–Morley: fringe shift ≪ predicted aether drift</option>
+                <option value="3">GPS pseudorange residuals fit an ellipsoid to cm precision</option>
+                </select>
+              </div>
+              <div class="widget__output" id="auxOut">
+                Select a core, append at least one auxiliary, and a datum. The system will report whether the conjunction <span class="metric">⟨T, A, E⟩</span> is consistent, and by what auxiliary adjustment an inconsistent case may be rescued.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="reveal" style="margin-top: var(--space-12)">Poincaré’s sphere–disc equivalence</h3>
+        <p class="reveal">
+          Poincaré (1902, ch. 5) demonstrated that a spherical world with homogeneous metric is indistinguishable, by internal measurement, from a bounded disc in which physical rulers shrink as they approach the boundary and the speed of light tends there to zero. Each geometry entails the same observational web. The choice between them is <em>conventional</em>: dictated by simplicity, not by fact.
+        </p>
+
+        <figure class="equiv reveal">
+          <div class="equiv__cell">
+            <svg viewBox="-100 -100 200 200" stroke="var(--accent)" fill="none">
+              <circle r="90" stroke-width="1.2"/>
+              <!-- Sphere: great circles -->
+              <ellipse rx="90" ry="30" stroke-width="0.8" opacity="0.7"/>
+              <ellipse rx="90" ry="55" stroke-width="0.6" opacity="0.45"/>
+              <ellipse rx="90" ry="75" stroke-width="0.5" opacity="0.3"/>
+              <ellipse rx="30" ry="90" stroke-width="0.8" opacity="0.7"/>
+              <ellipse rx="55" ry="90" stroke-width="0.6" opacity="0.45"/>
+              <ellipse rx="75" ry="90" stroke-width="0.5" opacity="0.3"/>
+              <g id="sphereGeo"></g>
+            </svg>
+            <span class="equiv__label">Spherical model</span>
+          </div>
+          <div class="equiv__cell">
+            <svg viewBox="-100 -100 200 200" stroke="var(--accent)" fill="none">
+              <circle r="90" stroke-width="1.2"/>
+              <!-- Concentric rings -->
+              <g stroke-width="0.6" opacity="0.6">
+                <circle r="15"/><circle r="30"/><circle r="45"/><circle r="60"/><circle r="75"/>
+              </g>
+              <!-- Radial meridians -->
+              <g stroke-width="0.5" opacity="0.5" id="discRays"></g>
+              <g id="discGeo"></g>
+            </svg>
+            <span class="equiv__label">Azimuthal disc model</span>
+          </div>
+        </figure>
+        <figcaption class="reveal" style="margin-top: calc(var(--space-12) * -1); margin-bottom: var(--space-12)"><strong>Fig. 1.2 —</strong> A geodesic of equal coordinate distance, rendered on each manifold. By Poincaré’s theorem, the empirical content of each diagram — lengths, angles, and triangle-sum — is reconciled by a choice of metric.</figcaption>
+
+        <h3 class="reveal">Reichenbach’s ε-simultaneity</h3>
+        <p class="reveal">
+          Reichenbach (<em>The Philosophy of Space and Time</em>, 1928 / Eng. 1958) showed that distant simultaneity is not an empirical invariant but a convention. Given a light-signal at <em>A</em> sent at t<sub>A</sub>, reflected at <em>B</em>, and received at <em>A</em> at t<sub>A</sub>′, the time assigned to the reflection event is:
+        </p>
+
+        <div class="eq reveal">
+          <div id="eq-eps"></div>
+          <span class="label">Equation 1.2 · Reichenbach ε-convention, 0 &lt; ε &lt; 1</span>
+        </div>
+
+        <div class="widget" id="epsWidget">
+          <span class="widget__label">Interactive · ε-Simultaneity</span>
+          <h4>The conventionality of the <em>same moment</em></h4>
+          <p>Einstein’s choice of ε = 1/2 is one of a continuum. Any ε ∈ (0, 1) yields a self-consistent chronogeometry. Drag to observe the re-partition of the light-cone.</p>
+          <div class="ctrl" style="margin-top: var(--space-6)">
+            <label>ε <span class="val" id="epsVal">0.500</span></label>
+            <input type="range" id="epsSlider" min="0.05" max="0.95" step="0.01" value="0.5" />
+          </div>
+          <div class="chart-box" style="margin-top: var(--space-4)">
+            <svg id="epsDiagram" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--ink-soft); margin-top: var(--space-3)">
+            At ε = <span id="epsVal2" class="sc" style="color: var(--accent)">0.50</span>, the one-way and two-way speeds of light coincide. At any other ε, only the two-way speed remains invariant — the one-way speed, which cannot be directly measured, becomes anisotropic by convention.
+          </p>
+        </div>
+
+        <div class="pullquote reveal">
+          “Physical theories are, as it were, undetermined by experience: there is always room for many systems of hypotheses equally adequate to the data, so that we always choose among them on grounds other than deductive.”
+          <cite>— W. V. O. Quine, <em>On Empirically Equivalent Systems of the World</em>, Erkenntnis 9 (1975), p. 313</cite>
+        </div>
+      </section>
+
+      <!-- ================= § II AETHERODYNAMICS ================= -->
+      <section class="chapter" id="sec-2">
+        <header class="chapter__head">
+          <div class="chapter__num">II</div>
+          <div>
+            <span class="chapter__kicker">Movement the Second</span>
+            <h2 class="chapter__title">Aetherodynamics, 1881–1930</h2>
+          </div>
+        </header>
+
+        <p class="lead reveal">
+          The episode conventionally narrated as the experimental extinction of the luminiferous aether is, on close reading, an episode of methodological choice. The Michelson–Morley null is what it is — but what the null <em>implies</em> depends on the auxiliary theory of the interferometer.
+        </p>
+
+        <figure class="reveal">
+          <img src="./assets/images/michelson_morley.png" alt="Technical cross-section engraving of the 1887 Michelson–Morley interferometer on its mercury-float stone turntable." loading="lazy" />
+          <figcaption><strong>Fig. 2.1 —</strong> The 1887 apparatus. Optical paths of equal length oriented at right angles; the stone slab floats on mercury to permit quiet rotation; fringes observed through the telescope at centre. <em>After</em> Michelson &amp; Morley, Am. J. Sci. 34 (1887), 333–345.</figcaption>
+        </figure>
+
+        <p class="reveal">
+          To second order in β = v/c, the classical theory predicts a round-trip time difference between parallel and perpendicular arms of:
+        </p>
+
+        <div class="eq reveal">
+          <div id="eq-deltat"></div>
+          <span class="label">Equation 2.1 · Classical prediction, to second order in β</span>
+        </div>
+
+        <p class="reveal">
+          For an arm length L = 11 m and a hypothesised drift v = 30 km/s (Earth orbital velocity), the predicted fringe shift on 180° rotation is ΔN ≈ 0.4 fringes. The observed shift was a small fraction of that — the “null result.” Two empirically equivalent readings of this null are, however, available. The canonical reading eliminates the aether. The Lorentzian reading, worked out explicitly by Lorentz (1904), FitzGerald, and Poincaré (1905), retains the aether and absorbs the null into a length-contraction auxiliary.
+        </p>
+
+        <div class="widget" id="mmWidget">
+          <span class="widget__label">Interactive · Michelson–Morley</span>
+          <h4>Rotate the turntable</h4>
+          <p>The predicted fringe shift, in the classical-aether theory, oscillates as <em>cos 2θ</em> with a period of π in the rotation angle.</p>
+
+          <div class="row-2" style="margin-top: var(--space-6)">
+            <div class="chart-box" style="aspect-ratio: 1/1">
+              <svg id="mmApparatus" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+            <div>
+              <div class="ctrl">
+                <label>Turntable rotation θ <span class="val" id="mmThetaVal">0°</span></label>
+                <input type="range" id="mmTheta" min="0" max="360" step="1" value="0" />
+              </div>
+              <div class="ctrl">
+                <label>Assumed aether drift <em>v</em> <span class="val" id="mmVVal">30 km/s</span></label>
+                <input type="range" id="mmV" min="0" max="60" step="1" value="30" />
+              </div>
+              <div class="widget__output" id="mmOut"></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="reveal" style="margin-top: var(--space-12)">The Miller oscillation (1925–1926)</h3>
+
+        <div class="margin-grid reveal">
+          <div>
+            <p>
+              Between 1921 and 1926 Dayton C. Miller of the Case School of Applied Science conducted the longest and most instrumentally careful programme of interferometer measurements in history — over 316,000 fringe readings, reported to the <em>National Academy of Sciences</em> in April 1925. Miller found a small but persistent sidereal signal: a residual drift of approximately 8–10 km/s whose phase rotated on a 24-hour cycle and, more strikingly, on an annual cycle tracking right ascension.
+            </p>
+            <p>
+              The canonical literature classifies this result as “null” or “thermally explained” after Shankland <em>et al.</em> (1955). Maurizio Consoli and collaborators have re-examined the record (<em>Nuovo Cimento B</em>, 2004; Consoli &amp; Pappalardo 2010) and argue that the Miller data are <em>not</em> null at conventional levels of thermal rejection — they are a signal whose interpretation depends entirely on which auxiliary theory of the refractive medium one adopts.
+            </p>
+          </div>
+          <div class="margin-note">
+            <span class="sc">Marginalium i —</span> Shankland’s 1955 reanalysis is not a re-measurement. It is a thermally-corrected <em>re-reading</em> of the same data under a rival auxiliary. This is the Duhem–Quine move in its purest form.
+          </div>
+        </div>
+
+        <div class="chart-box reveal">
+          <svg id="millerPlot" viewBox="0 0 760 340" preserveAspectRatio="xMidYMid meet" aria-label="Miller 1925 sidereal-time oscillation of fringe-shift amplitude, km/s"></svg>
+          <figcaption style="margin-top: var(--space-4)"><strong>Fig. 2.2 —</strong> Reconstruction of Miller’s 1925 sidereal-time oscillation. Amplitude of aether drift inferred from fringe shift (km/s) plotted against sidereal hour. Orthodoxy treats the ∼10 km/s residual as a thermal artefact; the Lorentzian programme treats it as the signal.</figcaption>
+        </div>
+
+        <figure class="reveal">
+          <img src="./assets/images/miller_laboratory.png" alt="Period photograph of a physics laboratory with a large interferometer on a concrete pier." loading="lazy"/>
+          <figcaption><strong>Fig. 2.3 —</strong> Interferometer laboratory at the Case School of Applied Science, c. 1925. The instrument was housed at Mount Wilson to minimise local thermal gradients; Miller’s programme combined over five years of observations.</figcaption>
+        </figure>
+
+        <h3 class="reveal">The Lorentzian alternative</h3>
+        <p class="reveal">
+          Bell (1976, “How to teach special relativity,” reprinted in <em>Speakable and Unspeakable in Quantum Mechanics</em>, CUP 1987, ch. 9) argued that Lorentz’s 1904 derivation of the transformations is, as a theory of rods and clocks, strictly equivalent to Einstein’s 1905 kinematic derivation. Ohanian (<em>Am. J. Phys.</em> 72, 2004; <em>Einstein’s Mistakes</em>, W. W. Norton 2008) extended the point to the Mercury-perihelion precession: the result follows from Lorentz-invariant gravitation at linear order without invoking curved spacetime. The choice is metaphysical, not empirical.
+        </p>
+
+        <h3 class="reveal">The Sagnac effect</h3>
+        <p class="reveal">
+          A rotating interferometer (Sagnac 1913; Michelson–Gale 1925) measures a non-null phase shift ΔΦ = 8πAΩ/λc which is first-order in angular velocity Ω. This is incompatible with strict special-relativistic kinematics unless one introduces a “local-inertial-frame” auxiliary. Within the Lorentzian programme the effect is elementary: the medium (aether) carries the frame. Contemporary ring-laser gyroscopes operate on exactly this non-null principle — their existence is therefore <em>not</em> an argument against the medium theory; it is an argument from it.
+        </p>
+      </section>
+
+      <!-- ================= § III CARTOGRAPHIC RECORD ================= -->
+      <section class="chapter" id="sec-3">
+        <header class="chapter__head">
+          <div class="chapter__num">III</div>
+          <div>
+            <span class="chapter__kicker">Movement the Third</span>
+            <h2 class="chapter__title">The Cartographic Record</h2>
+          </div>
+        </header>
+
+        <p class="lead reveal">
+          The history of cartography, read as a history of <em>projections</em>, demonstrates what Poincaré argued abstractly: the same observed world supports incompatible geometric renderings. Four exhibits, drawn from the archival record, will stand for many.
+        </p>
+
+        <div class="maps">
+          <article class="map-fig reveal">
+            <div class="map-fig__img"><img src="./assets/images/map_mercator.png" alt="Mercator's 1595 map of the Arctic region." loading="lazy" /></div>
+            <div>
+              <p class="map-fig__meta">Exhibit A · Septentrionalium Terrarum · 1595</p>
+              <h3>Mercator’s Arctic Inset</h3>
+              <p>Gerhard Mercator’s posthumous atlas of 1595 includes an arctic inset structured as a polar azimuthal projection, with four island-masses encircling a central polar mountain (the <em>Rupes Nigra</em>). Mercator cited for this image the lost 14th-century <em>Inventio Fortunata</em>, then still extant.</p>
+              <blockquote>“In the midst of the four countries is a Whirl-pool, into which there empty these four indrawing Seas which divide the North… Its height is 33 French miles.”<br><cite>— Mercator to John Dee, 20 April 1577</cite></blockquote>
+            </div>
+          </article>
+
+          <article class="map-fig reveal">
+            <div class="map-fig__img"><img src="./assets/images/map_finaeus.png" alt="Orontius Finaeus' 1531 double-cordiform world map." loading="lazy" /></div>
+            <div>
+              <p class="map-fig__meta">Exhibit B · Nova et Integra Universi Orbis · 1531</p>
+              <h3>Finaeus’ Double Cordiform</h3>
+              <p>Orontius Finaeus (Oronce Finé), Royal Professor of Mathematics under François I, published in 1531 a double heart-shaped projection containing a large southern continent with mountain ranges and rivers — strikingly congruent, when rectified, with the known sub-ice topography of Antarctica (cf. Hapgood, <em>Maps of the Ancient Sea Kings</em>, 1966, chs. 4–5).</p>
+              <blockquote>“The southern continent is recently found but not yet fully explored.”<br><cite>— Finaeus, marginal gloss, 1531</cite></blockquote>
+            </div>
+          </article>
+
+          <article class="map-fig reveal">
+            <div class="map-fig__img"><img src="./assets/images/map_piri_reis.png" alt="Piri Reis 1513 portolan chart." loading="lazy" /></div>
+            <div>
+              <p class="map-fig__meta">Exhibit C · Piri Reis Portolan · 1513</p>
+              <h3>The Piri Reis Fragment</h3>
+              <p>The surviving fragment of Piri Reis’ 1513 world chart, preserved at Topkapı Sarayı, renders the Atlantic coast of South America in correct relative longitude — a feat unavailable by instrumental means until the 18th-century marine chronometer. Piri Reis credits, among others, a chart of Columbus and at least eight unnamed sources “from the age of Alexander the Two-Horned.”</p>
+            </div>
+          </article>
+
+          <article class="map-fig reveal">
+            <div class="map-fig__img"><img src="./assets/images/map_buache.png" alt="Philippe Buache 1737 map of the southern lands." loading="lazy" /></div>
+            <div>
+              <p class="map-fig__meta">Exhibit D · Carte des Terres Australes · 1737</p>
+              <h3>Buache’s Antarctic Before Discovery</h3>
+              <p>Philippe Buache’s 1737 chart depicts the southern continent as bifurcated by a central inland sea — a feature corresponding, under bedrock topography, to the subglacial basin identified by BEDMAP2 (Fretwell <em>et al.</em>, <em>The Cryosphere</em> 7 (2013), 375–393). Buache died in 1773; Antarctica was officially sighted in 1820.</p>
+            </div>
+          </article>
+        </div>
+
+        <p class="reveal">
+          Two philosophical readings are possible. The orthodox reading: these are lucky guesses overlaid with post hoc pattern-matching. The heterodox reading: the record preserves a cartographic memory of a world whose geometry is not well-captured by the 19th-century spheroid. Neither reading is forced by the evidence. Both are compatible with it.
+        </p>
+      </section>
+
+      <!-- ================= § IV GEODESY ================= -->
+      <section class="chapter" id="sec-4">
+        <header class="chapter__head">
+          <div class="chapter__num">IV</div>
+          <div>
+            <span class="chapter__kicker">Movement the Fourth</span>
+            <h2 class="chapter__title">Geodesy and the Lock-In of Reference Frames</h2>
+          </div>
+        </header>
+
+        <p class="lead reveal">
+          The argument most frequently adduced from the floor — <em>“GPS works, therefore the Earth is a sphere”</em> — presupposes the very geometry in dispute. What GPS demonstrates is not that the Earth is an ellipsoid of revolution, but that a system whose receivers are programmed to solve for position against an ellipsoidal model yields self-consistent pseudorange residuals. This is a different proposition.
+        </p>
+
+        <h3 class="reveal">The pseudorange equation</h3>
+        <p class="reveal">
+          WGS84 (NGA Technical Report 8350.2, 2014) fixes an Earth-centred, Earth-fixed (ECEF) Cartesian frame with origin at the computed geocentre and a reference ellipsoid of semi-major axis <em>a</em> = 6 378 137.0 m and flattening <em>f</em> = 1/298.257 223 563. The receiver solves, for each satellite <em>i</em>:
+        </p>
+
+        <div class="eq reveal">
+          <div id="eq-pseudo"></div>
+          <span class="label">Equation 4.1 · GPS pseudorange, receiver ↔ satellite <em>i</em></span>
+        </div>
+
+        <p class="reveal">
+          where (<em>x<sub>i</sub>, y<sub>i</sub>, z<sub>i</sub>)</em> is the satellite’s ECEF position <em>under the assumed ellipsoid</em>, (<em>x, y, z</em>) the receiver’s unknown ECEF coordinates, <em>δt<sub>r</sub></em> and <em>δt<sub>s<sub>i</sub></sub></em> the receiver and satellite clock biases, and <em>ε<sub>i</sub></em> a residual term absorbing tropospheric delay, ionospheric delay, multipath, and unmodelled geodetic effects.
+        </p>
+
+        <div class="pullquote reveal">
+          “Any geodetic reference system must define a reference surface… The choice is never dictated purely by observation; it is always in part a matter of convention.”
+          <cite>— Torge &amp; Müller, <em>Geodesy</em>, 4th ed., de Gruyter 2012, § 4.3</cite>
+        </div>
+
+        <h3 class="reveal">The residual-absorption theorem</h3>
+        <p class="reveal">
+          Let the <em>true</em> receiver-satellite geometric distance be <em>d<sub>i</sub></em>, and let Δ<em>d<sub>i</sub></em> denote the error incurred by substituting the ellipsoidal-model coordinates for the true coordinates. Least-squares solution of the pseudorange system redistributes Δ<em>d<sub>i</sub></em> across three channels: residual coordinate error δ<em>x</em>, clock-bias correction Δ<em>δt<sub>r</sub></em>, and atmospheric-term inflation Δε<sub>i</sub>. The theorem states:
+        </p>
+
+        <div class="eq reveal">
+          <div id="eq-resid"></div>
+          <span class="label">Equation 4.2 · Residual-absorption, ordinary-least-squares partition</span>
+        </div>
+
+        <p class="reveal">
+          The consequence — underappreciated in the pedagogical literature — is that a misspecification of the reference datum does <em>not</em> present itself as a large coordinate residual. It presents itself as an inflation of the clock and atmospheric budgets, which are themselves fitted.
+        </p>
+
+        <div class="widget" id="gpsWidget">
+          <span class="widget__label">Interactive · Residual Absorption</span>
+          <h4>Where does a datum error go?</h4>
+          <p>Inject a deliberate datum misspecification and observe how the least-squares solver reallocates the error across the unmodelled channels.</p>
+
+          <div class="row-2" style="margin-top: var(--space-6)">
+            <div>
+              <div class="ctrl">
+                <label>Injected datum error <span class="val" id="gpsErrVal">0 m</span></label>
+                <input type="range" id="gpsErr" min="0" max="200" step="1" value="0" />
+              </div>
+              <div class="ctrl">
+                <label>Satellite geometry (DOP) <span class="val" id="gpsDopVal">1.8</span></label>
+                <input type="range" id="gpsDop" min="1" max="6" step="0.1" value="1.8" />
+              </div>
+              <div class="ctrl">
+                <label>Number of SVs in view <span class="val" id="gpsSvsVal">8</span></label>
+                <input type="range" id="gpsSvs" min="4" max="12" step="1" value="8" />
+              </div>
+            </div>
+            <div>
+              <div class="chart-box" style="padding: var(--space-4)">
+                <svg id="gpsDiagram" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet"></svg>
+                <div class="legend">
+                  <span><span class="legend__swatch" style="background: var(--accent)"></span>Coordinate residual</span>
+                  <span><span class="legend__swatch" style="background: var(--accent-2)"></span>Clock-bias inflation</span>
+                  <span><span class="legend__swatch" style="background: #6a8aa8"></span>Atmospheric term</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="widget__output" id="gpsOut"></div>
+        </div>
+
+        <h3 class="reveal">Ionospheric scintillation at high latitudes</h3>
+        <p class="reveal">
+          The degradation of GPS accuracy in high-latitude and polar regions is well documented (Jiao &amp; Morton, <em>Radio Science</em> 50, 2015; Prikryl <em>et al.</em>, <em>Ann. Geophys.</em> 29, 2011). The official explanation invokes auroral-zone plasma irregularities. Within the Lakatosian framework, the salient question is not whether this explanation is possible — it clearly is — but whether it is the <em>unique</em> explanation supported by the data. We observe that it is not.
+        </p>
+      </section>
+
+      <!-- ================= § V HIDDEN LEDGER ================= -->
+      <section class="chapter" id="sec-5">
+        <header class="chapter__head">
+          <div class="chapter__num">V</div>
+          <div>
+            <span class="chapter__kicker">Movement the Fifth · The Crushing Section</span>
+            <h2 class="chapter__title">The Hidden Ledger</h2>
+          </div>
+        </header>
+
+        <p class="lead reveal">
+          <em>An auxiliary-cost audit of the Standard Model.</em> The orthodox cosmological research programme has, over the past half-century, preserved its core theoretical commitments — the general-relativistic field equation, the cosmological principle, and the ΛCDM parameterisation — by introducing an unprecedented sequence of auxiliary entities. We summarise the ledger.
+        </p>
+
+        <div class="chart-box reveal">
+          <svg id="piePlot" viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" aria-label="Composition of the universe by ΛCDM inventory."></svg>
+          <figcaption style="margin-top: var(--space-4)"><strong>Fig. 5.1 —</strong> The inventory of the cosmos on the canonical ΛCDM accounting (Planck 2018 mission, <em>A&amp;A</em> 641, A6). Ordinary baryonic matter — that is, everything directly observed by any instrument ever built — constitutes 4.9% of the energy budget. The remaining 95.1% consists of entities postulated on theoretical grounds to preserve the field equation.</figcaption>
+        </div>
+
+        <p class="reveal">
+          By Lakatos’s (1970) distinction between <em>progressive</em> and <em>degenerating</em> research programmes, the relevant diagnostic is whether the auxiliaries introduced over time have led to the prediction of <em>new</em> corroborated facts (progressive), or whether they have served principally to preserve the core against otherwise-refuting evidence (degenerating). We offer four instances for the tribunal.
+        </p>
+
+        <div class="ledger-grid">
+          <article class="ledger-card reveal">
+            <div class="ledger-card__num">i</div>
+            <h4>Dark Matter</h4>
+            <p>Postulated by Zwicky (1933) and revived by Rubin (1970) to reconcile galactic rotation curves with GR. Over fifty years of direct-detection experiments — XENON1T, LUX, PandaX-4T, LUX-ZEPLIN (2023) — have reported null results for WIMPs across increasingly severe cross-section ceilings. The auxiliary survives by re-specifying the particle’s mass and coupling.</p>
+            <span class="tag">LZ 2023 — null · σ &lt; 9 × 10⁻⁴⁸ cm²</span>
+          </article>
+
+          <article class="ledger-card reveal">
+            <div class="ledger-card__num">ii</div>
+            <h4>Dark Energy</h4>
+            <p>Reintroduced in 1998 (Riess <em>et al.</em>; Perlmutter <em>et al.</em>) as the cosmological constant Einstein had withdrawn in 1931. The predicted value from quantum field theory differs from the observed value by 120 orders of magnitude — the worst quantitative disagreement in physics. The Hubble-tension impasse (Planck vs. SH0ES) now exceeds 5σ.</p>
+            <span class="tag">H₀ tension · 5.0σ (2023)</span>
+          </article>
+
+          <article class="ledger-card reveal">
+            <div class="ledger-card__num">iii</div>
+            <h4>Inflation</h4>
+            <p>Proposed by Guth (1981) to resolve the horizon and flatness problems without revising the field equation. Ijjas, Steinhardt &amp; Loeb (<em>Sci. Am.</em>, Feb. 2017 — “Pop Goes the Universe”) argue that inflation as formulated is no longer falsifiable, since the multiverse of outcomes it now accommodates includes any empirical result. Three of inflation’s original architects have repudiated the programme.</p>
+            <span class="tag">Ijjas/Steinhardt/Loeb · Sci. Am. 2017</span>
+          </article>
+
+          <article class="ledger-card reveal">
+            <div class="ledger-card__num">iv</div>
+            <h4>Quantum–GR Incompatibility</h4>
+            <p>The two fundamental pillars of 20th-century physics have resisted formal reconciliation for a century. At the Planck scale the field equation is not merely approximate; it is formally inconsistent with the quantum commutation relations. No experimentally corroborated synthesis exists. The programme proceeds on the expectation that one will.</p>
+            <span class="tag">G · unquantised · 100 yr</span>
+          </article>
+        </div>
+
+        <div class="closing reveal">
+          <p>
+            The audit does not establish that the orthodox programme is <em>wrong</em>. It establishes that, by Lakatosian criteria, it has paid enormous auxiliary costs to preserve its core. The question before us, framed honestly, is not whether alternative programmes are degenerate. The question is whether <em>any</em> current cosmological programme is progressive.
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= § VI REBUTTALS ================= -->
+      <section class="chapter" id="sec-6">
+        <header class="chapter__head">
+          <div class="chapter__num">VI</div>
+          <div>
+            <span class="chapter__kicker">Movement the Sixth</span>
+            <h2 class="chapter__title">Reply to Objections</h2>
+          </div>
+        </header>
+
+        <p class="lead reveal">
+          Six objections are anticipated. We reply to each with the resources of the preceding chapters. The replies are not intended to demonstrate the heterodox thesis; they are intended to show that the objections, as ordinarily formulated, beg the question.
+        </p>
+
+        <div class="rebuttals">
+          <details class="rebuttal" open>
+            <summary class="rebuttal__head">
+              <span class="r-num">a.</span>
+              <span class="r-obj"><small>Objection</small>“GPS demonstrates a sphere.”</span>
+              <span class="plus">＋</span>
+            </summary>
+            <div class="rebuttal__body">
+              <p><strong>Reply.</strong> The argument assumes the conclusion. GPS receivers solve the pseudorange equation <em>ρ<sub>i</sub> = |<b>r</b><sub>i</sub> − <b>r</b>| + c·Δt + ε<sub>i</sub></em> in an ECEF frame defined by WGS84. The ellipsoid is not an output of the measurement; it is an input to the coordinate transform. Residual errors are absorbed by the clock and atmospheric budgets — see § IV’s residual-absorption theorem. One cannot deduce the geometry of the Earth from a system that presupposes it.</p>
+              <p>This is the canonical form of what Glymour (1980) termed <em>bootstrapping</em>: the instrument is internally self-consistent, but internal consistency does not imply external reference. A sphere-referenced GPS and a disc-referenced GPS with appropriately transformed satellite ephemerides would return, at the user interface, numerically identical latitude–longitude pairs.</p>
+            </div>
+          </details>
+
+          <details class="rebuttal">
+            <summary class="rebuttal__head">
+              <span class="r-num">b.</span>
+              <span class="r-obj"><small>Objection</small>“Consensus across adversarial agencies — NASA, Roscosmos, CNSA, ESA, ISRO — rules out conspiracy.”</span>
+              <span class="plus">＋</span>
+            </summary>
+            <div class="rebuttal__body">
+              <p><strong>Reply.</strong> The objection trades on the <em>no-miracles argument</em> (Putnam 1975): it would be a miracle for independent agencies to converge on a false theory. The argument is neutralised, however, by the sociological observation of shared training, shared textbooks, shared launch windows, and — most importantly — shared <em>reference-frame conventions</em>. What looks like independent corroboration is, under Bloor’s strong programme (1976) and Kuhn’s disciplinary-matrix thesis (1962), convergent use of the same auxiliary apparatus.</p>
+              <p>Furthermore, the no-miracles argument is symmetrical. Scientific realism infers truth from empirical success. Scientific conventionalism infers only adequacy. The question whether convergent adequacy warrants convergent truth is the question in dispute. It cannot be used as a premise against the heterodox without begging the question.</p>
+            </div>
+          </details>
+
+          <details class="rebuttal">
+            <summary class="rebuttal__head">
+              <span class="r-num">c.</span>
+              <span class="r-obj"><small>Objection</small>“The Sagnac effect implies superluminal propagation under flat-Earth kinematics.”</span>
+              <span class="plus">＋</span>
+            </summary>
+            <div class="rebuttal__body">
+              <p><strong>Reply.</strong> <em>Petitio principii.</em> The “superluminal” charge presupposes special-relativistic kinematics. The Lorentzian programme retains the aether as a physical medium and denies the universal applicability of the c-limit <em>to the medium itself</em>. Within the medium theory, Sagnac is a direct propagation effect of the rotating frame against the medium: ΔΦ = 8πA·Ω / λc. No superluminal signalling is entailed, because the “signal” is not a signal — it is a rotation-induced phase differential.</p>
+              <p>The empirical datum is the same under either interpretation. The choice between interpretations is — again — a choice of auxiliary.</p>
+            </div>
+          </details>
+
+          <details class="rebuttal">
+            <summary class="rebuttal__head">
+              <span class="r-num">d.</span>
+              <span class="r-obj"><small>Objection</small>“Commercial aircraft fly the great-circle routes dictated by spherical geodesy; fuel consumption would be wrong otherwise.”</span>
+              <span class="plus">＋</span>
+            </summary>
+            <div class="rebuttal__body">
+              <p><strong>Reply.</strong> The objection conflates <em>operational</em> with <em>theoretical</em> equivalence. Aircraft fly <em>the routes the flight-management system computes</em> on the WGS84 ellipsoid; the pilot is not in a position to adjudicate between ellipsoidal and alternative geodesies. Fuel consumption is a function of airspeed, altitude, wind, and mass — all of which are operationally reported, not independently auditable by the public.</p>
+              <p>The ICCT (International Council on Clean Transportation, <em>CO₂ Emissions from Commercial Aviation 2013, 2018, and 2019</em>) reports route-level variability in fuel intensity of a factor of two on commercial trans-Pacific sectors. This range is sufficient to absorb substantial geometric re-specification without observable anomaly at the public reporting level. The argument from fuel economy requires independent public route-level fuel audits, which the industry does not provide.</p>
+            </div>
+          </details>
+
+          <details class="rebuttal">
+            <summary class="rebuttal__head">
+              <span class="r-num">e.</span>
+              <span class="r-obj"><small>Objection</small>“Twelve independent domains — astronomy, geodesy, satellite imagery, timekeeping, aviation, maritime navigation, seismology, oceanography, meteorology, gravimetry, photography, and direct circumnavigation — all corroborate the sphere. No auxiliary adjustment could rescue the heterodoxy in all twelve.”</span>
+              <span class="plus">＋</span>
+            </summary>
+            <div class="rebuttal__body">
+              <p><strong>Reply.</strong> This is the strongest objection; it deserves a careful answer. It is the form of argument Glymour (<em>Theory and Evidence</em>, 1980) criticised as the <em>common-cause</em> shortcut: the claim that many independent phenomena cannot all be jointly rescued by auxiliary manoeuvre.</p>
+              <p>The Glymour problem has, however, a canonical resolution by example: Bohmian mechanics reproduces the entire empirical content of non-relativistic quantum mechanics — all twelve domains, if you like — through a single auxiliary (the pilot wave). The analogous case in our domain is that all twelve listed corroborations are <em>processed through</em> the WGS84-or-equivalent reference frame. The reference frame is the pilot wave. A single auxiliary at the reference-frame level propagates through all twelve application domains. The argument from many-domains overestimates the independence of the corroborations.</p>
+            </div>
+          </details>
+
+          <details class="rebuttal">
+            <summary class="rebuttal__head">
+              <span class="r-num">f.</span>
+              <span class="r-obj"><small>Objection</small>“Sydney–Santiago direct flight time (~12 h) is flatly incompatible with azimuthal disc geometry, which makes the route two to three times longer.”</span>
+              <span class="plus">＋</span>
+            </summary>
+            <div class="rebuttal__body">
+              <p><strong>Reply.</strong> We concede the empirical observation: the route is flown in approximately twelve hours. What we do <em>not</em> concede is that this observation uniquely constrains the geometry. The flight-time datum constrains <em>distance-times-speed</em>, which factors into <em>distance</em> only under the auxiliary assumption that reported cruise airspeed is operationally independent of the flight-management system’s geometric model — which, by the Quinean principle of confirmational holism, it is not.</p>
+              <p>The honest position is therefore: the flight-time datum is compatible with the ellipsoidal geometry as usually interpreted; it is also compatible with the disc geometry conjoined with a revised airspeed auxiliary; and the public record does not contain the independent airspeed-at-altitude audit that would discriminate between them. This is an <em>intellectual concession</em> about the limits of public data, not an admission that the orthodox reading is uniquely compelled.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- ================= § VII APOLOGIA (also in footer) ================= -->
+      <section class="chapter" id="sec-7">
+        <header class="chapter__head">
+          <div class="chapter__num">VII</div>
+          <div>
+            <span class="chapter__kicker">Movement the Seventh</span>
+            <h2 class="chapter__title">Apologia &amp; Methodology</h2>
+          </div>
+        </header>
+
+        <p class="lead reveal">
+          This monograph is prepared as a <em>stress-test</em> of the philosophy-of-science apparatus — Duhem, Quine, Poincaré, Reichenbach, Lakatos — applied to what is, by any honest accounting, an unusually strong empirical consensus. The author does not assert that the Earth is not a sphere. The author asserts that the arguments by which we know the Earth is a sphere are philosophically more interesting than the received pedagogy acknowledges. The monograph is intended for structured academic debate.
+        </p>
+
+        <p class="reveal">
+          The method is adversarial: to adopt the heterodox position <em>in propria persona</em> and press it as hard as the philosophy-of-science literature permits, in order to expose the load-bearing auxiliaries that the orthodox position elects, by convention, not to name. This is the classical rhetorical exercise of the Academy, called by Aristotle <em>dialektikē</em>. It is not disinformation. It is not belief. It is argument.
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= APOLOGIA FOOTER ================= -->
+  <footer class="apologia" id="apologia">
+    <div class="apologia__inner">
+      <div class="apologia__label">Colophon · Apologia</div>
+      <h3>On the status of this document</h3>
+      <p>
+        <em>Terra Maior</em> is a role-played philosophy-of-science exercise prepared for a structured academic debate. The arguments reconstruct, in good faith, the strongest heterodox case available under the Duhem–Quine thesis, Poincaré’s geometric conventionalism, Reichenbach’s ε-simultaneity convention, and Lakatos’s account of scientific research programmes. The author does not hold the thesis; the author holds that the thesis is philosophically more interesting than its standard dismissal allows. The monograph is a stress-test of our methods, not a truth-claim about terrestrial geometry.
+      </p>
+
+      <h4 style="margin-top: var(--space-12)">Select bibliography</h4>
+      <ul class="biblio">
+        <li>Bell, J. S. (1976). “How to teach special relativity.” In <em>Speakable and Unspeakable in Quantum Mechanics</em>, CUP 1987, ch. 9.</li>
+        <li>Bloor, D. (1976). <em>Knowledge and Social Imagery</em>. London: RKP.</li>
+        <li>Consoli, M. &amp; Pappalardo, L. (2010). “Emergent gravity and the cosmic microwave background.” <em>Gen. Rel. Grav.</em> 42, 2585.</li>
+        <li>Duhem, P. (1906 / Eng. 1954). <em>The Aim and Structure of Physical Theory</em>. Princeton: PUP.</li>
+        <li>Fretwell, P. <em>et al.</em> (2013). “Bedmap2: improved ice bed, surface and thickness datasets for Antarctica.” <em>The Cryosphere</em> 7, 375–393.</li>
+        <li>Glymour, C. (1980). <em>Theory and Evidence</em>. Princeton: PUP.</li>
+        <li>Hapgood, C. H. (1966). <em>Maps of the Ancient Sea Kings</em>. Philadelphia: Chilton.</li>
+        <li>Ijjas, A., Steinhardt, P., Loeb, A. (2017). “Pop Goes the Universe.” <em>Scientific American</em>, Feb. 2017.</li>
+        <li>Jiao, Y. &amp; Morton, Y. T. (2015). “Comparison of the effect of high-latitude and equatorial ionospheric scintillation on GPS signals.” <em>Radio Science</em> 50, 886–903.</li>
+        <li>Kuhn, T. (1962). <em>The Structure of Scientific Revolutions</em>. Chicago: UCP.</li>
+        <li>Lakatos, I. (1970). “Falsification and the methodology of scientific research programmes.” In <em>Criticism and the Growth of Knowledge</em>, CUP.</li>
+        <li>Miller, D. C. (1925). “Ether-drift experiments at Mount Wilson.” <em>Proc. Nat. Acad. Sci.</em> 11, 306–314.</li>
+        <li>Ohanian, H. (2008). <em>Einstein’s Mistakes</em>. New York: W. W. Norton.</li>
+        <li>Poincaré, H. (1902). <em>La Science et l’Hypothèse</em>. Paris: Flammarion.</li>
+        <li>Quine, W. V. O. (1951). “Two dogmas of empiricism.” <em>Phil. Rev.</em> 60, 20–43.</li>
+        <li>Quine, W. V. O. (1975). “On empirically equivalent systems of the world.” <em>Erkenntnis</em> 9, 313–328.</li>
+        <li>Reichenbach, H. (1928 / Eng. 1958). <em>The Philosophy of Space and Time</em>. New York: Dover.</li>
+        <li>Shankland, R. S. <em>et al.</em> (1955). “New analysis of the interferometer observations of Dayton C. Miller.” <em>Rev. Mod. Phys.</em> 27, 167–178.</li>
+        <li>Torge, W. &amp; Müller, J. (2012). <em>Geodesy</em>, 4th ed. Berlin: de Gruyter.</li>
+        <li>ICCT (2019). <em>CO₂ Emissions from Commercial Aviation</em>. Washington: ICCT.</li>
+        <li>Planck Collaboration (2020). “Planck 2018 results. VI. Cosmological parameters.” <em>A&amp;A</em> 641, A6.</li>
+      </ul>
+
+      <h4 style="margin-top: var(--space-12)">Further reading online</h4>
+      <p>
+        <a href="https://plato.stanford.edu/entries/thomas-kuhn/" target="_blank" rel="noopener">Kuhn (SEP)</a> ·
+        <a href="https://plato.stanford.edu/entries/scientific-underdetermination/" target="_blank" rel="noopener">Underdetermination (SEP)</a> ·
+        <a href="https://plato.stanford.edu/entries/poincare/" target="_blank" rel="noopener">Poincaré (SEP)</a> ·
+        <a href="https://plato.stanford.edu/entries/reichenbach/" target="_blank" rel="noopener">Reichenbach (SEP)</a> ·
+        <a href="https://plato.stanford.edu/entries/lakatos/" target="_blank" rel="noopener">Lakatos (SEP)</a> ·
+        <a href="https://theicct.org/" target="_blank" rel="noopener">ICCT</a>
+      </p>
+
+      <div class="colophon">
+        Set in Cormorant Garamond &amp; EB Garamond · Monograph Ser. II, Vol. III · MMXXIV
+      </div>
+    </div>
+  </footer>
+
+  <!-- KaTeX render -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <!-- D3 -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
