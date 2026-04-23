@@ -2041,6 +2041,19 @@ html, body { overflow-x: hidden; }
   .scholia, .broadsheet-article, .atlas-plate, .wound, .eightfour, .syllogism, .bull {
     padding-left: 24px; padding-right: 24px;
   }
+  /* Tighten vertical rhythm on mobile — the desktop-scale numerals produce dead void on phones */
+  .part-intro { margin-bottom: 40px; padding: 0 24px; font-size: 16.5px; line-height: 1.65; }
+  .part-intro--crescendo { font-size: 17px; }
+  .wound { margin-bottom: 70px; }
+  .wound-header { margin-bottom: 28px; }
+  .wound-numeral { font-size: clamp(84px, 22vw, 140px); line-height: .9; margin: 6px 0; }
+  .wound-kicker { margin-bottom: 10px; letter-spacing: .28em; font-size: 10.5px; }
+  .wound-title { font-size: clamp(24px, 6.6vw, 34px); line-height: 1.2; }
+  .wound-subtitle { font-size: 15.5px; margin-bottom: 14px; }
+  .wound-body { font-size: 17px; line-height: 1.65; }
+  /* Crescendo/Part VIII opener: collapse the absolute-centered numeral so it doesn't eat vertical space */
+  .part--crescendo .part-opener { padding: 80px 24px 24px; min-height: 0; }
+  .part--crescendo .po-numeral { font-size: clamp(120px, 28vw, 180px); opacity: .18; }
   .scholia-wrap { grid-template-columns: 1fr; }
   .scholia-margin { min-height: 0; margin-top: 20px; }
   .marginalia { position: static; margin: 14px 0; max-width: 100%; }
