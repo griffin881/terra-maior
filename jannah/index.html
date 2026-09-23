@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ascent to Firdaws</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Karla:wght@400;500;700&family=Marcellus&display=swap">
+<style>
+  :root {
+    --night: #0B1030;
+    --lapis: #1E3B7A;
+    --gold: #E6BE6A;
+    --gold-soft: #F3DEA6;
+    --pearl: #F7F2E6;
+    --line: rgba(243, 222, 166, 0.28);
+    --glass: rgba(11, 16, 48, 0.62);
+    --display: "Marcellus", "Trajan Pro", "Times New Roman", serif;
+    --arabic: "Amiri", "Noto Naskh Arabic", "Geeza Pro", serif;
+    --ui: "Karla", "Segoe UI", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    background: var(--night);
+    color: var(--pearl);
+    font-family: var(--ui);
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  #stage { position: fixed; inset: 0; }
+  #stage canvas { display: block; touch-action: none; outline: none; }
+
+  /* ---------- HUD ---------- */
+  .hud-top {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 5;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 0;
+    pointer-events: none;
+  }
+  .rank-card {
+    background: linear-gradient(180deg, rgba(11, 16, 48, 0.74), rgba(11, 16, 48, 0.42));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 18px 12px;
+    max-width: min(300px, calc(100vw - 96px));
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .eyebrow {
+    font: 500 11px/1.2 var(--ui);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold-soft); opacity: 0.85;
+  }
+  .rank-ar { font-family: var(--arabic); font-size: 30px; line-height: 1.35; color: var(--gold); margin-top: 4px; }
+  .rank-en { font-family: var(--display); font-size: 20px; letter-spacing: 0.02em; line-height: 1.2; }
+  .rank-gloss { font-size: 13px; opacity: 0.72; margin-top: 2px; }
+  .deeds {
+    display: flex; gap: 10px; align-items: center; margin-top: 10px;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-soft);
+  }
+  .pips { display: flex; gap: 6px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--gold); transition: background .3s, box-shadow .3s; }
+  .pip.on { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+  .icon-btn {
+    pointer-events: auto;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--glass); color: var(--gold-soft);
+    font: 16px var(--display); cursor: pointer;
+  }
+  .icon-btn[aria-pressed="true"] { opacity: 0.5; text-decoration: line-through; }
+  .icon-btn:focus-visible, .btn:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 3px; }
+
+  .ladder {
+    position: fixed; right: 16px; top: 50%; transform: translateY(-50%); z-index: 4;
+    pointer-events: none;
+  }
+  .ladder ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; position: relative; }
+  .ladder ol::before { content: ""; position: absolute; right: 5px; top: 6px; bottom: 6px; width: 1px; background: var(--line); }
+  .ladder li {
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    font: 13px/1 var(--display); color: rgba(247, 242, 230, 0.66);
+    transition: color .4s;
+    text-shadow: 0 0 4px rgba(11, 16, 48, 1), 0 1px 10px rgba(11, 16, 48, 0.9);
+  }
+  .ladder .dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(243, 222, 166, 0.5); background: var(--night); position: relative; z-index: 1; flex: none; transition: all .4s; }
+  .ladder li.cleared { color: rgba(243, 222, 166, 0.85); }
+  .ladder li.cleared .dot { background: var(--gold); border-color: var(--gold); }
+  .ladder li.current { color: var(--pearl); }
+  .ladder li.current .dot { background: var(--pearl); border-color: var(--pearl); box-shadow: 0 0 0 4px rgba(230, 190, 106, 0.35), 0 0 16px var(--gold); }
+
+  .toast {
+    position: fixed; left: 50%; z-index: 6;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 28px);
+    transform: translate(-50%, 12px);
+    max-width: calc(100vw - 32px);
+    padding: 10px 20px; border-radius: 999px;
+    background: var(--glass); border: 1px solid var(--line);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    opacity: 0; transition: opacity .35s, transform .35s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast b { font: 400 17px var(--display); color: var(--pearl); }
+  .toast i { font-style: normal; font-size: 13px; color: var(--gold-soft); margin-left: 8px; opacity: .85; }
+
+  .banner {
+    position: fixed; inset: 0; z-index: 7;
+    display: grid; place-items: center; padding-inline: 16px;
+    pointer-events: none; text-align: center;
+    opacity: 0; transition: opacity .8s;
+  }
+  .banner.show { opacity: 1; }
+  .banner-inner { transform: translateY(14px); transition: transform 1.2s cubic-bezier(.2,.7,.2,1); max-width: 560px; }
+  .banner.show .banner-inner { transform: none; }
+  .banner .ar { font-family: var(--arabic); font-size: clamp(44px, 11vw, 76px); line-height: 1.3; color: var(--gold); text-shadow: 0 0 30px rgba(230, 190, 106, 0.55), 0 2px 12px rgba(11,16,48,.7); }
+  .banner .en { font-family: var(--display); font-size: clamp(22px, 5vw, 32px); letter-spacing: .03em; text-shadow: 0 2px 14px rgba(11,16,48,.9); }
+  .banner .gloss { font-size: 15px; color: var(--gold-soft); margin-top: 4px; text-shadow: 0 2px 10px rgba(11,16,48,.9); }
+  .banner .line {
+    margin: 18px auto 0; max-width: 44ch; font-size: 15px; line-height: 1.55;
+    padding: 12px 18px; border-radius: 12px; background: rgba(11, 16, 48, 0.5);
+  }
+  .banner .ref { display: block; margin-top: 6px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-soft); }
+
+  /* ---------- Overlays ---------- */
+  .overlay {
+    position: fixed; inset: 0; z-index: 10;
+    display: grid; place-items: center;
+    padding-inline: 16px; padding-block: calc(env(safe-area-inset-top, 0px) + 16px) calc(env(safe-area-inset-bottom, 0px) + 16px);
+    background: radial-gradient(ellipse at 50% 40%, rgba(11, 16, 48, 0.35), rgba(11, 16, 48, 0.88) 75%);
+    overflow-y: auto;
+  }
+  .panel { max-width: 540px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .panel h1 {
+    margin: 0; font: 400 clamp(38px, 9vw, 64px)/1.05 var(--display);
+    letter-spacing: .03em; text-wrap: balance;
+    text-shadow: 0 0 40px rgba(230, 190, 106, 0.35);
+  }
+  .panel .ar-title { font-family: var(--arabic); font-size: 26px; color: var(--gold); line-height: 1.2; }
+  .panel p { margin: 0; font-size: 16px; line-height: 1.6; max-width: 46ch; color: rgba(247, 242, 230, 0.88); text-wrap: pretty; }
+  .controls {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%;
+  }
+  .controls div {
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 8px;
+    font-size: 12px; color: rgba(247, 242, 230, 0.75); line-height: 1.4;
+  }
+  .controls kbd {
+    display: block; font: 400 15px var(--display); color: var(--gold-soft); margin-bottom: 2px;
+  }
+  .btn {
+    font: 400 18px var(--display); letter-spacing: .06em;
+    color: var(--night); background: linear-gradient(180deg, #F6DD9A, var(--gold));
+    border: 0; border-radius: 999px; padding: 14px 34px; cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.35) inset, 0 8px 30px rgba(230, 190, 106, 0.35);
+    transition: transform .15s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.45) inset, 0 10px 40px rgba(230, 190, 106, 0.5); }
+  .note { font-size: 12.5px !important; line-height: 1.55 !important; color: rgba(247, 242, 230, 0.6) !important; max-width: 52ch !important; }
+  .quote {
+    font-size: 16px; line-height: 1.65; max-width: 46ch; margin: 0;
+    padding: 16px 20px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  .quote cite { display: block; margin-top: 8px; font-style: normal; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-soft); }
+  .dua { font-family: var(--arabic); font-size: 24px; color: var(--gold); line-height: 1.5; }
+  .stats { display: flex; gap: 28px; justify-content: center; font-variant-numeric: tabular-nums; }
+  .stats div { display: flex; flex-direction: column; gap: 2px; }
+  .stats b { font: 400 26px var(--display); }
+  .stats span { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-soft); }
+
+  /* ---------- Touch ---------- */
+  .touch { display: none; }
+  @media (pointer: coarse) {
+    .touch { display: block; }
+    .toast { bottom: calc(env(safe-area-inset-bottom, 0px) + 170px); }
+  }
+  .joy {
+    position: fixed; z-index: 6; left: 20px; bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+    width: 124px; height: 124px; border-radius: 50%;
+    border: 1px solid var(--line); background: rgba(11, 16, 48, 0.35);
+    touch-action: none;
+  }
+  .joy-knob {
+    position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px;
+    border-radius: 50%; background: rgba(243, 222, 166, 0.35); border: 1px solid var(--gold-soft);
+  }
+  .jump {
+    position: fixed; z-index: 6; right: 24px; bottom: calc(env(safe-area-inset-bottom, 0px) + 40px);
+    width: 88px; height: 88px; border-radius: 50%;
+    border: 1px solid var(--gold-soft); background: rgba(230, 190, 106, 0.28);
+    color: var(--pearl); font: 400 15px var(--display); letter-spacing: .08em;
+    touch-action: none;
+  }
+
+  @media (max-width: 700px) {
+    .ladder .name { display: none; }
+    .rank-ar { font-size: 24px; }
+    .rank-en { font-size: 17px; }
+    .controls { grid-template-columns: 1fr 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .banner, .banner-inner, .toast { transition-duration: .01s; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+
+<header class="hud-top" id="hud" hidden>
+  <div class="rank-card">
+    <div class="eyebrow"><span id="rankNum">Rank 1</span> of 8</div>
+    <div class="rank-ar" id="rankAr" lang="ar" dir="rtl"></div>
+    <div class="rank-en" id="rankEn"></div>
+    <div class="rank-gloss" id="rankGloss"></div>
+    <div class="deeds"><span>Deeds</span><span class="pips" id="pips"></span></div>
+  </div>
+  <button class="icon-btn" id="muteBtn" type="button" aria-label="Mute sound" aria-pressed="false">♪</button>
+</header>
+
+<nav class="ladder" id="ladder" aria-label="Ranks of Jannah" hidden><ol id="ladderList"></ol></nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="banner" id="banner" aria-live="polite">
+  <div class="banner-inner">
+    <div class="eyebrow" id="bannerEyebrow">You have risen to</div>
+    <div class="ar" id="bannerAr" lang="ar" dir="rtl"></div>
+    <div class="en" id="bannerEn"></div>
+    <div class="gloss" id="bannerGloss"></div>
+    <div class="line"><span id="bannerLine"></span><span class="ref" id="bannerRef"></span></div>
+  </div>
+</div>
+
+<section class="overlay" id="intro">
+  <div class="panel">
+    <div class="eyebrow">Eight gardens, one above the next</div>
+    <h1>Ascent to Firdaws</h1>
+    <div class="ar-title" lang="ar" dir="rtl">درجات الجنة</div>
+    <p>Climb the ranks of Jannah from Dār as-Salām to al-Firdaws. On each level, gather five good deeds to open its gate. Walk through the gate to rise to the next rank.</p>
+    <div class="controls" aria-label="Controls">
+      <div><kbd>WASD / Arrows</kbd>Move</div>
+      <div><kbd>Space</kbd>Jump. Hold it to jump higher</div>
+      <div><kbd>Drag</kbd>Turn the view</div>
+    </div>
+    <button class="btn" id="startBtn" type="button">Begin the ascent</button>
+    <p class="note">The Qur’an names each of these gardens. Ordering them as eight ranks follows a popular tradition, and scholars differ on the order. What is authentically reported is that Jannah has a hundred levels and that al-Firdaws is the highest (Ṣaḥīḥ al-Bukhārī 2790).</p>
+  </div>
+</section>
+
+<section class="overlay" id="ending" hidden>
+  <div class="panel">
+    <div class="eyebrow">You reached the highest garden</div>
+    <h1>al-Firdaws</h1>
+    <blockquote class="quote">“When you ask Allah, ask Him for al-Firdaws, for it is the middle of Paradise and its highest part. Above it is the Throne of the Most Merciful, and from it the rivers of Paradise gush forth.”<cite>Ṣaḥīḥ al-Bukhārī 2790</cite></blockquote>
+    <div class="dua" lang="ar" dir="rtl">اللَّهُمَّ إِنِّي أَسْأَلُكَ الْفِرْدَوْسَ الْأَعْلَى</div>
+    <p style="font-size:14px;margin-top:-10px">O Allah, I ask You for the highest Firdaws.</p>
+    <div class="stats">
+      <div><b id="statTime">0:00</b><span>Climb time</span></div>
+      <div><b id="statDeeds">40</b><span>Deeds</span></div>
+      <div><b id="statFalls">0</b><span>Falls</span></div>
+    </div>
+    <p class="note" id="bestLine"></p>
+    <button class="btn" id="againBtn" type="button">Climb again</button>
+  </div>
+</section>
+
+<div class="touch" id="touch" hidden>
+  <div class="joy" id="joy" aria-hidden="true"><div class="joy-knob" id="knob"></div></div>
+  <button class="jump" id="jumpBtn" type="button">Jump</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const V3 = THREE.Vector3;
+  const clamp = THREE.MathUtils.clamp;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------------------------------------------------------------- content
+  const RANKS = [
+    { en: 'Dār as-Salām', ar: 'دار السلام', gloss: 'The Home of Peace', ref: 'al-Anʿām 6:127',
+      line: '“For them will be the Home of Peace with their Lord, and He will be their protector because of what they used to do.”', color: 0x9fc3e6 },
+    { en: 'Dār al-Muqāmah', ar: 'دار المقامة', gloss: 'The Home of Lasting Stay', ref: 'Fāṭir 35:35',
+      line: '“He who has settled us in the Home of Lasting Stay out of His bounty. No fatigue touches us there.”', color: 0x7fd1c2 },
+    { en: 'Dār al-Khuld', ar: 'دار الخلد', gloss: 'The Home of Eternity', ref: 'al-Furqān 25:15',
+      line: '“Is that better, or the Garden of Eternity which is promised to the righteous?”', color: 0x74c98f },
+    { en: 'Jannat al-Maʾwā', ar: 'جنة المأوى', gloss: 'The Garden of Refuge', ref: 'as-Sajdah 32:19',
+      line: '“As for those who believed and did righteous deeds, for them are the Gardens of Refuge as a welcome for what they used to do.”', color: 0xbcd36f },
+    { en: 'Jannāt an-Naʿīm', ar: 'جنات النعيم', gloss: 'The Gardens of Delight', ref: 'Yūnus 10:9',
+      line: '“Their Lord will guide them by their faith. Rivers will flow beneath them in the Gardens of Delight.”', color: 0xefc75e },
+    { en: 'ʿIlliyyūn', ar: 'عِلِّيُّون', gloss: 'The Lofty Heights', ref: 'al-Muṭaffifīn 83:18',
+      line: '“No! Indeed, the record of the righteous is in ʿIlliyyūn.”', color: 0xf1a57e },
+    { en: 'Jannāt ʿAdn', ar: 'جنات عدن', gloss: 'The Gardens of Perpetual Residence', ref: 'ar-Raʿd 13:23',
+      line: '“Gardens of perpetual residence. They will enter them with whoever was righteous among their fathers, their spouses and their descendants.”', color: 0xeea4c8 },
+    { en: 'Jannat al-Firdaws', ar: 'جنة الفردوس', gloss: 'The Highest Garden', ref: 'al-Kahf 18:107',
+      line: '“Indeed, those who believe and do righteous deeds will have the Gardens of Firdaws as a lodging.”', color: 0xfff0c2 },
+  ];
+  const DEEDS = [
+    ['Prayer on its time', 'Ṣalāh'], ['Charity given in secret', 'Ṣadaqah'], ['Patience in hardship', 'Ṣabr'],
+    ['Reciting the Qur’an', 'Tilāwah'], ['Kindness to parents', 'Birr al-wālidayn'], ['Remembrance of Allah', 'Dhikr'],
+    ['Truthful speech', 'Ṣidq'], ['Forgiving others', 'ʿAfw'], ['Feeding the hungry', 'Iṭʿām'],
+    ['Removing harm from the path', 'Imāṭat al-adhā'], ['A smile for your brother', 'Tabassum'], ['Visiting the sick', 'ʿIyādah'],
+    ['Holding back anger', 'Kaẓm al-ghayẓ'], ['Seeking knowledge', 'Ṭalab al-ʿilm'], ['Caring for the orphan', 'Kafālat al-yatīm'],
+    ['Keeping ties of kinship', 'Ṣilat ar-raḥim'], ['Fasting', 'Ṣawm'], ['Good character', 'Ḥusn al-khuluq'],
+    ['Honouring your guest', 'Ikrām aḍ-ḍayf'], ['Gratitude', 'Shukr'],
+  ];
+  const FALL_LINES = ['Every soul stumbles. Rise again.', 'Turn back and try once more.', 'The door of return is always open.', 'Patience. Climb again.'];
+
+  // ---------------------------------------------------------------- world constants
+  const TIERS = 8, STEPS = 8, ANG = 0.55, RISE = 2, R = 10;
+  const TOP_Y = TIERS * STEPS * RISE;
+  const SPEED = 7.5, G = 28, JUMP = 13.5;
+  const spiral = (k, rad = R) => new V3(Math.cos(k * ANG) * rad, k * RISE, Math.sin(k * ANG) * rad);
+
+  // ---------------------------------------------------------------- renderer
+  const stage = $('stage');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  stage.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x5a4f9c, 30, 150);
+  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+
+  function resize() {
+    const w = stage.clientWidth || innerWidth, h = stage.clientHeight || innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.fov = w < h ? 72 : 60;
+    camera.updateProjectionMatrix();
+  }
+  addEventListener('resize', resize);
+  resize();
+
+  // ---------------------------------------------------------------- textures
+  function makeGlowTex() {
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const g = c.getContext('2d');
+    const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(255,255,255,1)');
+    gr.addColorStop(0.22, 'rgba(255,255,255,0.55)');
+    gr.addColorStop(0.55, 'rgba(255,255,255,0.12)');
+    gr.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+    return new THREE.CanvasTexture(c);
+  }
+  function makeCloudTex() {
+    const c = document.createElement('canvas'); c.width = c.height = 256;
+    const g = c.getContext('2d');
+    for (let i = 0; i < 14; i++) {
+      const x = 60 + Math.random() * 136, y = 100 + Math.random() * 60, r = 40 + Math.random() * 50;
+      const gr = g.createRadialGradient(x, y, 0, x, y, r);
+      gr.addColorStop(0, 'rgba(255,255,255,0.5)');
+      gr.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+    }
+    return new THREE.CanvasTexture(c);
+  }
+  const GLOW = makeGlowTex(), CLOUD = makeCloudTex();
+  function glowSprite(color, scale, opacity = 1) {
+    const m = new THREE.SpriteMaterial({ map: GLOW, color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false });
+    const s = new THREE.Sprite(m); s.scale.setScalar(scale); return s;
+  }
+
+  // ---------------------------------------------------------------- sky
+  const skyU = { top: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, bot: { value: new THREE.Color() } };
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 32, 16), new THREE.ShaderMaterial({
+    uniforms: skyU, side: THREE.BackSide, depthWrite: false, fog: false,
+    vertexShader: 'varying vec3 vP; void main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: 'uniform vec3 top; uniform vec3 hor; uniform vec3 bot; varying vec3 vP; void main(){ float h = normalize(vP).y; vec3 c = h > 0.0 ? mix(hor, top, pow(h, 0.55)) : mix(hor, bot, pow(-h, 0.45)); gl_FragColor = vec4(c, 1.0); }',
+  }));
+  sky.renderOrder = -1;
+  scene.add(sky);
+  const SKY = [
+    { p: 0.00, top: 0x0c1340, hor: 0x5a4f9c, bot: 0x151a48 },
+    { p: 0.30, top: 0x1b3a88, hor: 0xb98fc9, bot: 0x3b3a82 },
+    { p: 0.62, top: 0x3a78c4, hor: 0xf4cf96, bot: 0xd9a574 },
+    { p: 1.00, top: 0xf7e2b0, hor: 0xfffaf0, bot: 0xfff0d2 },
+  ].map((s) => ({ p: s.p, top: new THREE.Color(s.top), hor: new THREE.Color(s.hor), bot: new THREE.Color(s.bot) }));
+
+  const hemi = new THREE.HemisphereLight(0xdfe6ff, 0x3a2f5a, 0.9);
+  scene.add(hemi);
+  const sun = new THREE.DirectionalLight(0xfff0d0, 0.7);
+  sun.position.set(30, 80, 20);
+  scene.add(sun);
+  const WHITE = new THREE.Color(0xffffff);
+
+  function applySky(p) {
+    let i = 0;
+    while (i < SKY.length - 2 && p > SKY[i + 1].p) i++;
+    const a = SKY[i], b = SKY[i + 1];
+    const t = clamp((p - a.p) / (b.p - a.p), 0, 1);
+    skyU.top.value.copy(a.top).lerp(b.top, t);
+    skyU.hor.value.copy(a.hor).lerp(b.hor, t);
+    skyU.bot.value.copy(a.bot).lerp(b.bot, t);
+    scene.fog.color.copy(skyU.hor.value);
+    hemi.color.copy(skyU.top.value).lerp(WHITE, 0.55);
+    hemi.groundColor.copy(skyU.bot.value);
+    hemi.intensity = 0.62 + p * 0.25;
+  }
+
+  // ---------------------------------------------------------------- atmosphere
+  const clouds = new THREE.Group();
+  scene.add(clouds);
+  for (let i = 0; i < 110; i++) {
+    const low = i < 50;
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: CLOUD, color: 0xffffff, transparent: true, depthWrite: false,
+      opacity: low ? 0.55 + Math.random() * 0.3 : 0.25 + Math.random() * 0.25,
+    }));
+    const a = Math.random() * Math.PI * 2;
+    const rad = low ? 18 + Math.random() * 120 : 55 + Math.random() * 110;
+    s.position.set(Math.cos(a) * rad, low ? -14 + Math.random() * 7 : Math.random() * (TOP_Y + 40) - 5, Math.sin(a) * rad);
+    s.scale.setScalar(low ? 26 + Math.random() * 36 : 22 + Math.random() * 30);
+    clouds.add(s);
+  }
+
+  const MOTES = 520;
+  const moteGeo = new THREE.BufferGeometry();
+  const motePos = new Float32Array(MOTES * 3);
+  for (let i = 0; i < MOTES; i++) {
+    const a = Math.random() * Math.PI * 2, rad = 3 + Math.random() * 30;
+    motePos[i * 3] = Math.cos(a) * rad;
+    motePos[i * 3 + 1] = Math.random() * (TOP_Y + 25) - 5;
+    motePos[i * 3 + 2] = Math.sin(a) * rad;
+  }
+  moteGeo.setAttribute('position', new THREE.BufferAttribute(motePos, 3));
+  const motes = new THREE.Points(moteGeo, new THREE.PointsMaterial({
+    size: 0.4, map: GLOW, color: 0xffe7b0, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending,
+  }));
+  scene.add(motes);
+
+  const columnH = TOP_Y + 40;
+  const columnMat = (op) => new THREE.MeshBasicMaterial({ color: 0xfff3cf, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+  const column1 = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, columnH, 24, 1, true), columnMat(0.16));
+  const column2 = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, columnH, 24, 1, true), columnMat(0.05));
+  column1.position.y = column2.position.y = columnH / 2 - 10;
+  scene.add(column1, column2);
+  const crown = new THREE.Group();
+  crown.position.set(0, TOP_Y + 22, 0);
+  crown.add(glowSprite(0xfff4d6, 90, 0.9), glowSprite(0xffffff, 26, 1));
+  scene.add(crown);
+
+  // ---------------------------------------------------------------- platforms
+  const marbleMat = new THREE.MeshStandardMaterial({ color: 0xd9d1c1, roughness: 0.6, metalness: 0.05 });
+  const underMat = new THREE.MeshStandardMaterial({ color: 0xcdbfa6, roughness: 0.95, flatShading: true });
+  const stoneMat = new THREE.MeshStandardMaterial({ color: 0xf6f0e2, roughness: 0.45, metalness: 0.08 });
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x9b7b56, roughness: 0.9 });
+  const rimMats = {};
+  const rimMat = (color) => rimMats[color] || (rimMats[color] = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.65, roughness: 0.4 }));
+
+  function makePlatform(r, color) {
+    const g = new THREE.Group();
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(r, r * 0.95, 0.6, 40), marbleMat);
+    top.position.y = -0.3;
+    const under = new THREE.Mesh(new THREE.ConeGeometry(r * 0.88, r * 1.35, 7), underMat);
+    under.rotation.x = Math.PI;
+    under.position.y = -0.6 - r * 0.675;
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(r, 0.07, 8, 48), rimMat(color));
+    rim.rotation.x = Math.PI / 2;
+    rim.position.y = 0.01;
+    g.add(top, under, rim);
+    return g;
+  }
+  function makeTree(color) {
+    const g = new THREE.Group();
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.13, 1.1, 6), trunkMat);
+    trunk.position.y = 0.55;
+    const leafColor = new THREE.Color(0x3f8f5f).lerp(new THREE.Color(color), 0.35);
+    const canopy = new THREE.Mesh(new THREE.IcosahedronGeometry(0.6, 0), new THREE.MeshStandardMaterial({ color: leafColor, flatShading: true, roughness: 0.8 }));
+    canopy.position.y = 1.4;
+    canopy.scale.set(1, 0.85, 1);
+    g.add(trunk, canopy);
+    return g;
+  }
+
+  const platforms = [], tiers = [];
+  let deedCounter = 0;
+
+  function addPlatform(pos, r, color, move = null) {
+    const group = makePlatform(r, color);
+    scene.add(group);
+    const p = { group, base: pos.clone(), pos: pos.clone(), prev: pos.clone(), delta: new V3(), r, move,
+      visible: true, reveal: 1, revealDelay: 0, active: true };
+    group.position.copy(pos);
+    platforms.push(p);
+    return p;
+  }
+
+  function addDeed(plat, t) {
+    const g = new THREE.Group();
+    const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.32), new THREE.MeshStandardMaterial({
+      color: 0xffe2a0, emissive: 0xffc860, emissiveIntensity: 0.9, roughness: 0.25, metalness: 0.3,
+    }));
+    g.add(gem, glowSprite(RANKS[t].color, 2.6, 0.9));
+    g.position.y = 1.3;
+    plat.group.add(g);
+    const d = { group: g, gem, plat, tier: t, collected: false, phase: Math.random() * 6.28, name: DEEDS[deedCounter++ % DEEDS.length] };
+    tiers[t].deeds.push(d);
+  }
+
+  function makeGate(plat, t, k) {
+    const color = new THREE.Color(RANKS[t].color);
+    const g = new THREE.Group();
+    g.rotation.y = -k * ANG;
+    for (const x of [-1.6, 1.6]) {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.26, 3.8, 12), stoneMat);
+      pillar.position.set(x, 1.9, 0);
+      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 8), rimMat(RANKS[t].color));
+      cap.position.set(x, 0.05, 0);
+      g.add(pillar, cap);
+      const tree = makeTree(RANKS[t].color);
+      tree.position.set(x * 1.6, 0, 0);
+      g.add(tree);
+    }
+    const arch = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.2, 10, 32, Math.PI), stoneMat);
+    arch.position.y = 3.8;
+    const barMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.25, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending });
+    const bar = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 3.8), barMat);
+    bar.position.y = 1.9;
+    const barTop = new THREE.Mesh(new THREE.CircleGeometry(1.6, 32, 0, Math.PI), barMat);
+    barTop.position.y = 3.8;
+    const beamMat = new THREE.MeshBasicMaterial({ color: 0xfff2cc, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 70, 20, 1, true), beamMat);
+    beam.position.y = 35;
+    g.add(arch, bar, barTop, beam);
+    plat.group.add(g);
+    return { group: g, plat, barMat, beamMat, color, open: false, passed: false, tier: t };
+  }
+
+  // start platform
+  const startPlat = addPlatform(spiral(0), 4, RANKS[0].color);
+  for (let i = 0; i < 5; i++) {
+    const a = (i / 5) * Math.PI * 2 + 0.4;
+    const tr = makeTree(RANKS[0].color);
+    tr.position.set(Math.cos(a) * 3.2, 0, Math.sin(a) * 3.2);
+    startPlat.group.add(tr);
+  }
+
+  for (let t = 0; t < TIERS; t++) {
+    tiers[t] = { plats: [], deeds: [], gate: null };
+    const color = RANKS[t].color;
+    const r = Math.max(1.55, 2.4 - t * 0.12);
+    const movers = new Set(t >= 2 ? [2, 6] : []);
+    if (t >= 4) movers.add(3);
+    if (t >= 6) movers.add(5);
+    for (let o = 1; o <= STEPS; o++) {
+      const k = t * STEPS + o;
+      const pos = spiral(k);
+      const isGate = o === STEPS;
+      const move = movers.has(o)
+        ? { dir: new V3(Math.cos(k * ANG), 0, Math.sin(k * ANG)), amp: 1.3 + t * 0.15, speed: 0.8 + t * 0.07, phase: k * 1.7 }
+        : null;
+      const p = addPlatform(pos, isGate ? 3.2 : r, color, move);
+      tiers[t].plats.push(p);
+      if (o === 1 || o === 3 || o === 5 || o === 7) addDeed(p, t);
+      if (o === 4) {
+        const branch = addPlatform(spiral(k, R + 5.8), r, color);
+        tiers[t].plats.push(branch);
+        addDeed(branch, t);
+      }
+      if (isGate) tiers[t].gate = makeGate(p, t, k);
+    }
+  }
+
+  // ---------------------------------------------------------------- player
+  const pl = { pos: new V3(), vel: new V3(), onGround: false, ground: null, coyote: 0, jumpBuf: 0, lastSafe: startPlat };
+  const orb = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 16), new THREE.MeshStandardMaterial({
+    color: 0xffffff, emissive: 0xffeac2, emissiveIntensity: 0.95, roughness: 0.3,
+  }));
+  orb.add(glowSprite(0xffe6b0, 3.4, 0.85));
+  orb.add(new THREE.PointLight(0xffe2a8, 1.4, 12, 2));
+  scene.add(orb);
+  const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.55, 24), new THREE.MeshBasicMaterial({ color: 0x0b1030, transparent: true, opacity: 0.35, depthWrite: false }));
+  shadow.rotation.x = -Math.PI / 2;
+  scene.add(shadow);
+
+  const TRAIL = 14;
+  const trail = [];
+  for (let i = 0; i < TRAIL; i++) {
+    const s = glowSprite(0xffe6b0, 0.9 * (1 - i / TRAIL), 0.35 * (1 - i / TRAIL));
+    s.visible = false;
+    scene.add(s);
+    trail.push(s);
+  }
+  const trailPts = [];
+  let trailTimer = 0;
+
+  // ---------------------------------------------------------------- effects
+  const bursts = [];
+  function burst(pos, color, size = 5, dur = 0.7) {
+    const s = glowSprite(color, 0.5, 1);
+    s.position.copy(pos);
+    scene.add(s);
+    bursts.push({ s, t: 0, size, dur });
+  }
+
+  // ---------------------------------------------------------------- audio
+  let actx = null, muted = false;
+  function initAudio() {
+    if (actx) return;
+    try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; }
+  }
+  function note(freq, when = 0, dur = 1.4, vol = 0.1) {
+    if (!actx || muted) return;
+    const t = actx.currentTime + when;
+    const o = actx.createOscillator(), o2 = actx.createOscillator(), g = actx.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    o2.type = 'triangle'; o2.frequency.value = freq * 2;
+    const g2 = actx.createGain(); g2.gain.value = 0.18;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); o2.connect(g2); g2.connect(g); g.connect(actx.destination);
+    o.start(t); o2.start(t); o.stop(t + dur + 0.05); o2.stop(t + dur + 0.05);
+  }
+  const SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21];
+  const hz = (semi, base = 293.66) => base * Math.pow(2, semi / 12);
+
+  // ---------------------------------------------------------------- HUD
+  const pipsEl = $('pips');
+  for (let i = 0; i < 5; i++) { const s = document.createElement('span'); s.className = 'pip'; pipsEl.appendChild(s); }
+  const ladderList = $('ladderList');
+  const ladderItems = [];
+  for (let i = RANKS.length - 1; i >= 0; i--) {
+    const li = document.createElement('li');
+    const name = document.createElement('span'); name.className = 'name'; name.textContent = RANKS[i].en;
+    const dot = document.createElement('span'); dot.className = 'dot';
+    li.append(name, dot);
+    ladderList.appendChild(li);
+    ladderItems[i] = li;
+  }
+
+  const state = { mode: 'intro', tier: 0, falls: 0, start: 0, time: 0, ascendT: 0, closedHintAt: -10 };
+
+  function updateHUD() {
+    const r = RANKS[state.tier];
+    $('rankNum').textContent = `Rank ${state.tier + 1}`;
+    $('rankAr').textContent = r.ar;
+    $('rankEn').textContent = r.en;
+    $('rankGloss').textContent = r.gloss;
+    const ds = tiers[state.tier].deeds;
+    [...pipsEl.children].forEach((pip, i) => pip.classList.toggle('on', !!(ds[i] && ds[i].collected)));
+    ladderItems.forEach((li, i) => {
+      li.classList.toggle('cleared', i < state.tier);
+      li.classList.toggle('current', i === state.tier);
+    });
+  }
+
+  let toastTimer = 0;
+  function toast(main, sub = '') {
+    const el = $('toast');
+    el.textContent = '';
+    const b = document.createElement('b'); b.textContent = main; el.appendChild(b);
+    if (sub) { const i = document.createElement('i'); i.textContent = sub; el.appendChild(i); }
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
+  let bannerTimer = 0;
+  function showBanner(r, eyebrow = 'You have risen to') {
+    $('bannerEyebrow').textContent = eyebrow;
+    $('bannerAr').textContent = r.ar;
+    $('bannerEn').textContent = r.en;
+    $('bannerGloss').textContent = r.gloss;
+    $('bannerLine').textContent = r.line;
+    $('bannerRef').textContent = r.ref;
+    const b = $('banner');
+    b.classList.remove('show');
+    void b.offsetWidth;
+    b.classList.add('show');
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(() => b.classList.remove('show'), 4800);
+  }
+
+  // ---------------------------------------------------------------- game flow
+  function setHidden(p, hidden) {
+    p.visible = !hidden; p.group.visible = !hidden;
+    p.reveal = hidden ? 0 : 1; p.active = !hidden; p.revealDelay = 0;
+  }
+  function revealTier(t) {
+    tiers[t].plats.forEach((p, i) => {
+      p.visible = true; p.group.visible = true;
+      p.reveal = 0; p.revealDelay = i * 0.12; p.active = false;
+    });
+  }
+
+  function resetGame() {
+    tiers.forEach((tier, t) => {
+      tier.plats.forEach((p) => setHidden(p, t > 0));
+      tier.deeds.forEach((d) => { d.collected = false; d.group.visible = true; });
+      const g = tier.gate;
+      g.open = false; g.passed = false; g.group.visible = true;
+      g.barMat.color.copy(g.color); g.barMat.opacity = 0.25; g.beamMat.opacity = 0;
+    });
+    state.tier = 0; state.falls = 0; state.ascendT = 0;
+    pl.pos.copy(startPlat.pos);
+    pl.pos.x -= 1.5;
+    pl.vel.set(0, 0, 0);
+    pl.onGround = false; pl.ground = null; pl.lastSafe = startPlat;
+    trailPts.length = 0;
+    updateHUD();
+  }
+
+  function startGame() {
+    initAudio();
+    if (actx && actx.state === 'suspended') actx.resume();
+    resetGame();
+    state.mode = 'play';
+    state.start = performance.now();
+    $('intro').hidden = true;
+    $('ending').hidden = true;
+    $('hud').hidden = false;
+    $('ladder').hidden = false;
+    $('touch').hidden = false;
+    camYaw = Math.atan2(pl.pos.x, pl.pos.z);
+    snapCamera = true;
+    showBanner(RANKS[0], 'You begin in');
+    [0, 4, 7].forEach((s, i) => note(hz(s), i * 0.12, 1.8, 0.07));
+    renderer.domElement.focus({ preventScroll: true });
+  }
+
+  function collect(d) {
+    d.collected = true;
+    d.group.visible = false;
+    const wp = d.plat.pos.clone(); wp.y += d.group.position.y;
+    burst(wp, RANKS[d.tier].color, 5);
+    const count = tiers[d.tier].deeds.filter((x) => x.collected).length;
+    note(hz(SCALE[count + 2]), 0, 1.6, 0.11);
+    note(hz(SCALE[count + 2] + 12), 0.06, 1.2, 0.04);
+    toast(d.name[0], d.name[1]);
+    updateHUD();
+    if (count === tiers[d.tier].deeds.length) openGate(tiers[d.tier].gate);
+  }
+
+  function openGate(g) {
+    g.open = true;
+    g.barMat.color.set(0xfff4d6);
+    [0, 4, 7, 12].forEach((s, i) => note(hz(s, 392), i * 0.09, 2, 0.07));
+    setTimeout(() => {
+      const next = RANKS[g.tier + 1];
+      toast(next ? `The gate to ${next.en} is open` : 'The light above is calling', 'Walk through the arch');
+    }, 900);
+  }
+
+  function passGate(g) {
+    g.passed = true;
+    const wp = g.plat.pos.clone(); wp.y += 2;
+    burst(wp, 0xfff4d6, 14, 1.1);
+    g.group.visible = false;
+    pl.lastSafe = g.plat;
+    if (g.tier < TIERS - 1) {
+      state.tier = g.tier + 1;
+      revealTier(state.tier);
+      updateHUD();
+      showBanner(RANKS[state.tier]);
+      [0, 4, 7, 11, 14].forEach((s, i) => note(hz(s + state.tier), i * 0.11, 2.2, 0.08));
+    } else {
+      state.mode = 'ascend';
+      state.ascendT = 0;
+      state.time = performance.now() - state.start;
+      ladderItems.forEach((li) => { li.classList.add('cleared'); li.classList.remove('current'); });
+      [0, 7, 12, 16, 19, 24].forEach((s, i) => note(hz(s), i * 0.16, 3, 0.07));
+    }
+  }
+
+  function fmtTime(ms) {
+    const s = Math.round(ms / 1000);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  }
+
+  function showEnding() {
+    state.mode = 'end';
+    $('hud').hidden = true;
+    $('touch').hidden = true;
+    $('statTime').textContent = fmtTime(state.time);
+    $('statDeeds').textContent = String(TIERS * 5);
+    $('statFalls').textContent = String(state.falls);
+    let best = null;
+    try {
+      best = Number(localStorage.getItem('firdaws-best')) || null;
+      if (!best || state.time < best) { localStorage.setItem('firdaws-best', String(Math.round(state.time))); }
+    } catch (e) { /* storage unavailable */ }
+    $('bestLine').textContent = best && best < state.time ? `Your fastest climb: ${fmtTime(best)}` : 'Your fastest climb so far.';
+    $('ending').hidden = false;
+    $('againBtn').focus({ preventScroll: true });
+  }
+
+  // ---------------------------------------------------------------- input
+  const keys = new Set();
+  let joyX = 0, joyY = 0;
+  const JUMP_CODES = new Set(['Space']);
+  const GAME_CODES = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space']);
+  function pressJump() { pl.jumpBuf = 0.14; }
+  function releaseJump() { if (pl.vel.y > 4) pl.vel.y *= 0.55; }
+
+  addEventListener('keydown', (e) => {
+    if (state.mode !== 'play') return;
+    if (GAME_CODES.has(e.code)) e.preventDefault();
+    if (JUMP_CODES.has(e.code) && !e.repeat) pressJump();
+    keys.add(e.code);
+  });
+  addEventListener('keyup', (e) => {
+    keys.delete(e.code);
+    if (JUMP_CODES.has(e.code)) releaseJump();
+  });
+  addEventListener('blur', () => keys.clear());
+
+  // view drag
+  let camYaw = 0, yawOff = 0, lastDrag = -10, dragId = null, dragX = 0, snapCamera = true;
+  const cvs = renderer.domElement;
+  cvs.tabIndex = 0;
+  cvs.addEventListener('pointerdown', (e) => {
+    dragId = e.pointerId; dragX = e.clientX;
+    try { cvs.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+  });
+  cvs.addEventListener('pointermove', (e) => {
+    if (e.pointerId !== dragId) return;
+    yawOff -= (e.clientX - dragX) * 0.006;
+    dragX = e.clientX;
+    lastDrag = clock.elapsedTime;
+  });
+  const endDrag = (e) => { if (e.pointerId === dragId) dragId = null; };
+  cvs.addEventListener('pointerup', endDrag);
+  cvs.addEventListener('pointercancel', endDrag);
+
+  // joystick
+  const joy = $('joy'), knob = $('knob');
+  let joyId = null;
+  function joyMove(e) {
+    const r = joy.getBoundingClientRect();
+    let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    const len = Math.hypot(dx, dy), max = 44;
+    if (len > max) { dx *= max / len; dy *= max / len; }
+    knob.style.transform = `translate(${dx}px, ${dy}px)`;
+    joyX = dx / max; joyY = dy / max;
+  }
+  joy.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); joyId = e.pointerId;
+    try { joy.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    joyMove(e);
+  });
+  joy.addEventListener('pointermove', (e) => { if (e.pointerId === joyId) joyMove(e); });
+  const joyEnd = (e) => { if (e.pointerId !== joyId) return; joyId = null; joyX = joyY = 0; knob.style.transform = ''; };
+  joy.addEventListener('pointerup', joyEnd);
+  joy.addEventListener('pointercancel', joyEnd);
+  const jumpBtn = $('jumpBtn');
+  jumpBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); pressJump(); });
+  jumpBtn.addEventListener('pointerup', releaseJump);
+  jumpBtn.addEventListener('pointercancel', releaseJump);
+
+  $('startBtn').addEventListener('click', (e) => { e.currentTarget.blur(); startGame(); });
+  $('againBtn').addEventListener('click', (e) => { e.currentTarget.blur(); startGame(); });
+  $('muteBtn').addEventListener('click', (e) => {
+    muted = !muted;
+    e.currentTarget.setAttribute('aria-pressed', String(muted));
+    e.currentTarget.setAttribute('aria-label', muted ? 'Unmute sound' : 'Mute sound');
+    e.currentTarget.blur();
+  });
+
+  // ---------------------------------------------------------------- update
+  const approach = (v, target, step) => (v < target ? Math.min(v + step, target) : Math.max(v - step, target));
+  const wrapAngle = (a) => Math.atan2(Math.sin(a), Math.cos(a));
+  const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+  const clock = new THREE.Clock();
+  const lookTarget = new V3(0, 6, 0);
+  const tmp = new V3(), tmp2 = new V3();
+  let skyP = 0;
+
+  function updatePlatforms(dt, time) {
+    for (const p of platforms) {
+      if (!p.visible) continue;
+      if (p.reveal < 1) {
+        if (p.revealDelay > 0) p.revealDelay -= dt;
+        else p.reveal = Math.min(1, p.reveal + dt / 1.1);
+      }
+      const e = easeOut(p.reveal);
+      p.prev.copy(p.pos);
+      p.pos.copy(p.base);
+      if (p.move) p.pos.addScaledVector(p.move.dir, Math.sin(time * p.move.speed + p.move.phase) * p.move.amp);
+      p.pos.y -= (1 - e) * 7;
+      p.group.position.copy(p.pos);
+      p.group.scale.setScalar(Math.max(0.001, e));
+      p.active = p.reveal >= 1;
+      p.delta.subVectors(p.pos, p.prev);
+    }
+  }
+
+  function updatePlayer(dt) {
+    let ix = 0, iz = 0;
+    if (keys.has('KeyD') || keys.has('ArrowRight')) ix += 1;
+    if (keys.has('KeyA') || keys.has('ArrowLeft')) ix -= 1;
+    if (keys.has('KeyW') || keys.has('ArrowUp')) iz += 1;
+    if (keys.has('KeyS') || keys.has('ArrowDown')) iz -= 1;
+    ix += joyX; iz -= joyY;
+
+    if (pl.onGround && pl.ground) {
+      pl.pos.x += pl.ground.delta.x;
+      pl.pos.z += pl.ground.delta.z;
+      pl.pos.y = pl.ground.pos.y;
+    }
+
+    const fx = -Math.sin(camYaw), fz = -Math.cos(camYaw);
+    const rx = Math.cos(camYaw), rz = -Math.sin(camYaw);
+    let mx = rx * ix + fx * iz, mz = rz * ix + fz * iz;
+    const ml = Math.hypot(mx, mz);
+    if (ml > 1) { mx /= ml; mz /= ml; }
+    const acc = (pl.onGround ? 44 : 22) * dt;
+    pl.vel.x = approach(pl.vel.x, mx * SPEED, acc);
+    pl.vel.z = approach(pl.vel.z, mz * SPEED, acc);
+
+    pl.coyote = pl.onGround ? 0.1 : pl.coyote - dt;
+    pl.jumpBuf -= dt;
+    if (pl.jumpBuf > 0 && pl.coyote > 0) {
+      pl.vel.y = JUMP; pl.coyote = 0; pl.jumpBuf = 0;
+      pl.onGround = false; pl.ground = null;
+    }
+    pl.vel.y = Math.max(pl.vel.y - G * dt, -34);
+
+    const prevY = pl.pos.y;
+    pl.pos.addScaledVector(pl.vel, dt);
+
+    const wasGround = pl.onGround;
+    pl.onGround = false;
+    let landed = null;
+    if (pl.vel.y <= 0) {
+      for (const p of platforms) {
+        if (!p.active) continue;
+        const dx = pl.pos.x - p.pos.x, dz = pl.pos.z - p.pos.z;
+        if (dx * dx + dz * dz > p.r * p.r) continue;
+        const top = p.pos.y;
+        if (prevY >= top - 0.06 - Math.abs(p.delta.y) && pl.pos.y <= top && (!landed || top > landed.pos.y)) landed = p;
+      }
+    }
+    if (landed) {
+      if (!wasGround && pl.vel.y < -12) note(hz(-12), 0, 0.4, 0.05);
+      pl.pos.y = landed.pos.y; pl.vel.y = 0;
+      pl.onGround = true; pl.ground = landed;
+      if (!landed.move) pl.lastSafe = landed;
+    } else {
+      pl.ground = null;
+    }
+
+    // fell
+    if (pl.pos.y < pl.lastSafe.pos.y - 14) {
+      state.falls++;
+      pl.pos.copy(pl.lastSafe.pos);
+      pl.vel.set(0, 0, 0);
+      trailPts.length = 0;
+      snapCamera = true;
+      toast(FALL_LINES[state.falls % FALL_LINES.length]);
+      note(hz(-5), 0, 1, 0.06);
+    }
+
+    // deeds
+    const cy = pl.pos.y + 0.5;
+    for (const d of tiers[state.tier].deeds) {
+      if (d.collected) continue;
+      const dx = pl.pos.x - d.plat.pos.x, dy = cy - (d.plat.pos.y + d.group.position.y), dz = pl.pos.z - d.plat.pos.z;
+      if (dx * dx + dy * dy + dz * dz < 1.35 * 1.35) collect(d);
+    }
+
+    // gate
+    const g = tiers[state.tier].gate;
+    if (!g.passed) {
+      const dx = pl.pos.x - g.plat.pos.x, dz = pl.pos.z - g.plat.pos.z;
+      const near = dx * dx + dz * dz < 1.4 * 1.4 && Math.abs(pl.pos.y - g.plat.pos.y) < 0.8 && g.plat.active;
+      if (near && g.open) passGate(g);
+      else if (near && clock.elapsedTime - state.closedHintAt > 4) {
+        state.closedHintAt = clock.elapsedTime;
+        const left = tiers[state.tier].deeds.filter((d) => !d.collected).length;
+        toast(`${left} more deed${left === 1 ? '' : 's'} will open this gate`, 'Look for the lights');
+      }
+    }
+  }
+
+  function updateCamera(dt, time) {
+    if (state.mode === 'intro') {
+      const a = time * (reduceMotion ? 0.03 : 0.1);
+      camera.position.set(Math.sin(a) * 34, 15 + Math.sin(time * 0.2) * 2, Math.cos(a) * 34);
+      lookTarget.set(0, 9, 0);
+      camera.lookAt(lookTarget);
+      return;
+    }
+    if (state.mode === 'ascend' || state.mode === 'end') {
+      const a = time * 0.06;
+      tmp.set(Math.sin(a) * 26, orb.position.y - 6, Math.cos(a) * 26);
+      camera.position.lerp(tmp, 1 - Math.exp(-dt * 1.5));
+      lookTarget.lerp(tmp2.set(0, orb.position.y + 4, 0), 1 - Math.exp(-dt * 2));
+      camera.lookAt(lookTarget);
+      return;
+    }
+    if (time - lastDrag > 1.2) yawOff *= Math.exp(-dt * 1.3);
+    yawOff = wrapAngle(yawOff);
+    const target = Math.atan2(pl.pos.x, pl.pos.z) + yawOff;
+    camYaw = snapCamera ? target : camYaw + wrapAngle(target - camYaw) * (1 - Math.exp(-dt * 5));
+    const D = 10.5, H = 4.6;
+    tmp.set(pl.pos.x + Math.sin(camYaw) * D, pl.pos.y + H, pl.pos.z + Math.cos(camYaw) * D);
+    tmp2.set(pl.pos.x, pl.pos.y + 1.4, pl.pos.z);
+    if (snapCamera) { camera.position.copy(tmp); lookTarget.copy(tmp2); snapCamera = false; }
+    else {
+      camera.position.lerp(tmp, 1 - Math.exp(-dt * 7));
+      lookTarget.lerp(tmp2, 1 - Math.exp(-dt * 10));
+    }
+    camera.lookAt(lookTarget);
+  }
+
+  function frame() {
+    const dt = Math.min(clock.getDelta(), 1 / 30);
+    const time = clock.elapsedTime;
+
+    updatePlatforms(dt, time);
+
+    if (state.mode === 'play') updatePlayer(dt);
+    if (state.mode === 'ascend') {
+      state.ascendT += dt;
+      pl.pos.x *= 1 - dt * 0.8;
+      pl.pos.z *= 1 - dt * 0.8;
+      pl.pos.y += dt * (3 + state.ascendT * 4);
+      if (state.ascendT > 5) showEnding();
+    }
+    if (state.mode === 'end') pl.pos.y = Math.min(pl.pos.y + dt * 2, TOP_Y + 18);
+
+    // player visuals
+    const showOrb = state.mode !== 'intro';
+    orb.visible = showOrb;
+    orb.position.set(pl.pos.x, pl.pos.y + 0.5 + (pl.onGround ? Math.sin(time * 4) * 0.04 : 0), pl.pos.z);
+    // shadow on the highest platform beneath
+    let under = null;
+    if (showOrb && state.mode === 'play') {
+      for (const p of platforms) {
+        if (!p.active || p.pos.y > pl.pos.y + 0.01) continue;
+        const dx = pl.pos.x - p.pos.x, dz = pl.pos.z - p.pos.z;
+        if (dx * dx + dz * dz <= p.r * p.r && (!under || p.pos.y > under.pos.y)) under = p;
+      }
+    }
+    shadow.visible = !!under;
+    if (under) {
+      const h = pl.pos.y - under.pos.y;
+      shadow.position.set(pl.pos.x, under.pos.y + 0.03, pl.pos.z);
+      shadow.scale.setScalar(Math.max(0.4, 1 - h * 0.06));
+      shadow.material.opacity = Math.max(0.12, 0.4 - h * 0.025);
+    }
+    trailTimer += dt;
+    if (showOrb && trailTimer > 0.03) {
+      trailTimer = 0;
+      trailPts.unshift(orb.position.clone());
+      if (trailPts.length > TRAIL) trailPts.pop();
+    }
+    trail.forEach((s, i) => {
+      s.visible = showOrb && !!trailPts[i] && i > 0;
+      if (trailPts[i]) s.position.copy(trailPts[i]);
+    });
+
+    // deeds and gates animate
+    const tier = tiers[state.tier];
+    for (const t of tiers) {
+      for (const d of t.deeds) {
+        if (!d.group.visible) continue;
+        d.group.position.y = 1.3 + Math.sin(time * 2 + d.phase) * 0.15;
+        d.gem.rotation.y = time * 1.6 + d.phase;
+      }
+      const g = t.gate;
+      if (g.open && !g.passed) {
+        g.barMat.opacity = 0.4 + Math.sin(time * 3) * 0.15;
+        g.beamMat.opacity = Math.min(0.22, g.beamMat.opacity + dt * 0.2);
+      } else if (!g.passed && t === tier) {
+        g.barMat.opacity = 0.22 + Math.sin(time * 1.5) * 0.05;
+      }
+    }
+
+    // bursts
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const b = bursts[i];
+      b.t += dt;
+      const k = b.t / b.dur;
+      b.s.scale.setScalar(0.5 + easeOut(Math.min(1, k)) * b.size);
+      b.s.material.opacity = Math.max(0, 1 - k);
+      if (k >= 1) { scene.remove(b.s); b.s.material.dispose(); bursts.splice(i, 1); }
+    }
+
+    // atmosphere
+    const arr = moteGeo.attributes.position.array;
+    const rise = reduceMotion ? 0.15 : 1;
+    for (let i = 0; i < MOTES; i++) {
+      arr[i * 3 + 1] += dt * (0.35 + (i % 5) * 0.12) * rise;
+      if (arr[i * 3 + 1] > TOP_Y + 20) arr[i * 3 + 1] -= TOP_Y + 25;
+    }
+    moteGeo.attributes.position.needsUpdate = true;
+    clouds.rotation.y = time * 0.004;
+
+    const refY = state.mode === 'intro' ? 0 : pl.pos.y;
+    skyP += (clamp(refY / TOP_Y, 0, 1) - skyP) * (1 - Math.exp(-dt * 1.5));
+    applySky(skyP);
+
+    updateCamera(dt, time);
+    sky.position.copy(camera.position);
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+
+  resetGame();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
