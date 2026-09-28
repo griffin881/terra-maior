@@ -8,7 +8,7 @@ It is a static page (`index.html` + `app.js` + `style.css`) that reads JSON from
 
 | Path | What it is | Who writes it |
 |---|---|---|
-| `predictions.json` | The seven predictions, falsifiers, auto rules, Polymarket markets, GDELT queries, keyword tag rules | You |
+| `predictions.json` | The nine predictions, falsifiers, auto rules, Polymarket markets, GDELT queries, keyword tag rules | You |
 | `data/series.json` | Time series + market odds | `fetch.py` |
 | `data/news.json` | Rolling 120-day tagged news feed | `fetch.py` (merges across runs) |
 | `data/status.json` | Auto falsifier signal per prediction + source errors | `fetch.py` |
@@ -42,7 +42,7 @@ Only P1–P3 have falsifiers the data can measure. The rules are in `predictions
 - **P2** is *broken* on 30 consecutive Brent closes below $80, and *wobbling* if any of the last 30 closes left the $90–130 band.
 - **P3** is *broken* if the USD share is >59% for two consecutive quarters, and *wobbling* if the share is up year on year.
 
-P4–P7 are judged by a person in the monthly check.
+P4–P9 are judged by a person in the monthly check.
 
 ## Refreshing
 

@@ -66,16 +66,36 @@
       "title": "Europe is the weakest link; political breaks appear there first",
       "horizon": "2027-05-31",
       "claim": "At least one European government faces a survival-level crisis over energy costs, or a far-right breakthrough explicitly fueled by energy misery.",
-      "mechanism": "P2 transmits hardest where dependence is highest and fiscal room thinnest. Winter amplifies it.",
+      "mechanism": "P2 transmits hardest where dependence is highest and fiscal room thinnest. Winter amplifies it. Revised 2026-09-28 after red-team fact-check: the core warning (historically low seasonal storage, crisis-level prices, record diesel assessments, far right leading polls in France and Germany) is confirmed, but exposure scoring and several supporting figures in the research brief were overstated. Status: plausible, but insufficiently defined without the break criteria in the falsifier.",
       "track": ["EU natural gas price (FRED, monthly)", "European diesel prices (manual)", "Government approval ratings", "Election results"],
-      "falsifier": "Europe weathers winter 2026–27 with no major political disruption.",
+      "falsifier": "None of the following occur through spring 2027: (a) coalition collapse, lost confidence vote, or leadership replacement over energy costs; (b) far-right governing agreement or national election victory; (c) enacted energy-policy reversal with implemented supply arrangements; (d) concrete obstruction or reversal of a specified joint EU/NATO policy.",
+      "auto": null
+    },
+    {
+      "id": "P8",
+      "title": "Russia probes NATO's eastern flank as US entanglement deepens",
+      "horizon": "2027-12-31",
+      "claim": "Moscow runs probes testing whether Article 5 credibility holds while Washington is tied down in the Middle East.",
+      "mechanism": "Overstretch opportunism: every carrier group, interceptor stockpile, and aid dollar committed to CENTCOM is bandwidth unavailable for NATO's eastern flank. No master plan required. Baseline recalibrated 2026-09-28: September 2025 already saw the first-ever NATO shoot-downs of Russian assets over allied territory and two Article 4 invocations in two weeks, so probing is the baseline, not the escalation.",
+      "track": ["Airspace violations", "Baltic/Black Sea intercept incidents", "Large exercises (Zapad-type)", "Belarus force posture", "Nuclear signaling rhetoric"],
+      "falsifier": "No incident through 2027 above the recalibrated bar: manned-aircraft engagement, Article 5 invocation, casualties, or kinetic response beyond drones.",
+      "auto": null
+    },
+    {
+      "id": "P9",
+      "title": "Taiwan faces heightened gray-zone pressure without full invasion",
+      "horizon": "2027-12-31",
+      "claim": "Beijing intensifies coercion — coast-guard pressure, air and maritime incursions, economic leverage — while stopping short of invasion or full blockade, exploiting the US carrier gap in the western Pacific.",
+      "mechanism": "The same overstretch logic as P8 applied to the Pacific: with US carriers and interceptors committed to CENTCOM, the cost of gray-zone escalation falls. The window is open now — zero US carriers in the western Pacific in August 2026; PLA coercion already shifting from air sorties to coast-guard pressure with a new front east of Taiwan — not a future risk.",
+      "track": ["PLA air/naval sortie counts around Taiwan", "Coast-guard patrol density east of Taiwan", "US carrier positions in the western Pacific", "Kinmen/Matsu incidents"],
+      "falsifier": "No gray-zone escalation above the 2026 baseline through 2027: no CCG-led quarantine or customs-inspection regime at scale, no seizure or blockade of Kinmen/Matsu, no 200+-sortie exercise, no declared closure of waters east of Taiwan.",
       "auto": null
     }
   ],
   "markets": [
     { "slug": "strait-of-hormuz-traffic-returns-to-normal-by-december-31", "bears_on": ["P1"] },
     { "slug": "will-the-us-invade-iran-before-2027", "bears_on": ["P4"] },
-    { "slug": "china-x-taiwan-military-clash-before-2027", "bears_on": ["P4", "P6"] },
+    { "slug": "china-x-taiwan-military-clash-before-2027", "bears_on": ["P4", "P6", "P9"] },
     { "slug": "iran-agrees-to-end-enrichment-of-uranium-by-december-31-1", "bears_on": ["P1", "P4"] }
   ],
   "news_queries": [
@@ -85,7 +105,9 @@
     "(\"war powers\" OR \"US strikes\" OR \"US airstrike\" OR \"B-2 bombers\" OR \"carrier strike group\")",
     "(\"military AI\" OR \"Pentagon AI\" OR \"chip export controls\" OR \"AI export controls\" OR \"open-weight model\")",
     "(BRICS OR \"Shanghai Cooperation\" OR multipolar)",
-    "(\"energy crisis\" OR \"gas prices\" OR \"no-confidence vote\" OR \"far-right\") Europe"
+    "(\"energy crisis\" OR \"gas prices\" OR \"no-confidence vote\" OR \"far-right\") Europe",
+    "(Russia OR NATO) (\"airspace violation\" OR \"drone incursion\" OR \"Article 5\" OR \"Article 4\" OR Baltic OR Zapad OR Belarus OR Oreshnik)",
+    "(Taiwan OR Kinmen OR Matsu OR Pratas) (PLA OR \"coast guard\" OR ADIZ OR blockade OR quarantine OR \"median line\")"
   ],
   "tag_rules": {
     "P1": "hormuz|bab el-?mandeb|red sea|houthi|strait|tanker|shipping|interceptor",
@@ -94,6 +116,8 @@
     "P4": "war powers|pentagon|bomber|b-2|b-52|carrier|airstrike|u\\.?s\\.? strike|us troops|centcom",
     "P5": "\\bai\\b|artificial intelligence|compute|nvidia|\\bchips?\\b|semiconductor|export control|open-weight|gpu",
     "P6": "brics|shanghai cooperation|\\bsco\\b|multipolar|alliance|security pact|taiwan",
-    "P7": "europe|\\beu\\b|germany|german|france|french|britain|\\buk\\b|italy|italian|far-right|no-confidence|coalition|energy crisis|gas price"
+    "P7": "europe|\\beu\\b|germany|german|france|french|britain|\\buk\\b|italy|italian|far-right|no-confidence|coalition|energy crisis|gas price",
+    "P8": "russia.*nato|nato.*russia|airspace violation|drone incursion|article 5|article 4|baltic|zapad|belarus|oreshnik|eastern flank",
+    "P9": "taiwan|kinmen|matsu|pratas|median line|quarantine.*taiwan|taiwan.*quarantine|pla.*sortie|coast guard"
   }
 }

@@ -331,7 +331,7 @@
       ...events.items.map((e) => ({ ...e, curated: true, t: toTime(e.date) })),
       ...news.items.map((n) => ({ ...n, t: toTime(n.date) })),
     ].sort((a, b) => b.t - a.t || (b.curated ? 1 : 0) - (a.curated ? 1 : 0));
-    const tags = ["P1", "P2", "P3", "P4", "P5", "P6", "P7"];
+    const tags = ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"];
     const active = new Set();
     let q = "", shown = 60;
     const filters = $("#feed-filters");
