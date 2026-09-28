@@ -1,0 +1,99 @@
+{
+  "issued": "2026-09-28",
+  "predictions": [
+    {
+      "id": "P1",
+      "title": "No restoration of the pre-February order through winter",
+      "horizon": "2027-03-31",
+      "claim": "Hormuz stays contested; Bab el-Mandeb stays under Houthi pressure.",
+      "mechanism": "Loop P2 needs sustained pressure. Houthi entrenchment (trenches, islands, a 'ship transit administration') signals staying, not raiding. Winter maximizes transmission into European political pain.",
+      "track": ["Hormuz daily transits (IMF PortWatch)", "Bab el-Mandeb daily transits (IMF PortWatch)", "Houthi territorial control (manual)"],
+      "falsifier": "Full reopening of both waterways + Houthi withdrawal by end of 2026.",
+      "auto": "Broken if BOTH chokepoints' 30-day mean transits are at least 80% of their 2025 baseline on or before 2026-12-31. Wobbling if either is at least 60%. Houthi withdrawal needs a manual verdict."
+    },
+    {
+      "id": "P2",
+      "title": "Oil elevated and volatile: Brent $90–130 through Q1 2027",
+      "horizon": "2027-03-31",
+      "claim": "Brent trades in a $90–130 band, spiking on escalation and pulling back on diplomacy.",
+      "mechanism": "The band is the contest between the structural risk premium (P2 loop) and the price mechanism (N2: shale, SPR, demand destruction).",
+      "track": ["Brent / WTI daily (FRED)", "War-risk insurance premiums (manual)", "Saudi East-West pipeline throughput (manual)"],
+      "falsifier": "Brent sustains below $80 for 30 consecutive trading days.",
+      "auto": "Broken on 30 consecutive Brent closes below $80. Wobbling if any close in the last 30 trading days left the $90–130 band."
+    },
+    {
+      "id": "P3",
+      "title": "Dedollarization in energy trade accelerates measurably by end of 2027",
+      "horizon": "2027-12-31",
+      "claim": "Non-dollar oil settlement and yuan settlement rise; the dollar's reserve share erodes.",
+      "mechanism": "Loop P1: high prices raise the incentive to leave dollar rails, and every weaponization episode recruits new defectors.",
+      "track": ["USD share of FX reserves (IMF COFER, quarterly)", "CNY share of FX reserves (IMF COFER)", "Non-dollar oil settlement share (manual)", "CIPS / yuan settlement volumes (manual)"],
+      "falsifier": "Dollar share of reserves rises back above 59% and holds.",
+      "auto": "Broken if USD share is above 59% for two consecutive quarters. Wobbling if the latest USD share is higher than it was four quarters earlier."
+    },
+    {
+      "id": "P4",
+      "title": "US deepens involvement without choosing full war",
+      "horizon": "2027-06-30",
+      "claim": "Intel/targeting support and limited strikes; no sustained direct war with Iran or the Houthis.",
+      "mechanism": "C1, the credibility trap: the US must respond, but midterms, force strain, fiscal limits and N3 hold it back.",
+      "track": ["US strike authorizations", "Troop / asset movements", "Congressional war-powers activity", "Prediction markets on US–Iran escalation"],
+      "falsifier": "Either direction: full US withdrawal from the theater, OR a sustained bombing campaign / ground commitment.",
+      "auto": null
+    },
+    {
+      "id": "P5",
+      "title": "AI capabilities concentrate; gains accrue to states and large capitals first",
+      "horizon": "2027-12-31",
+      "claim": "Frontier AI stays compute-concentrated; military AI investment surges.",
+      "mechanism": "Loop P3 plus C3: in wartime the diffusion-vs-control contradiction resolves toward control.",
+      "track": ["Compute concentration metrics", "Military AI budget lines", "Open-weight lag behind the closed frontier (months)"],
+      "falsifier": "A genuinely open-weights model matches the closed frontier within 6 months of release.",
+      "auto": null
+    },
+    {
+      "id": "P6",
+      "title": "Interregnum, not succession: no single successor hegemon by 2028",
+      "horizon": "2028-12-31",
+      "claim": "Fragmented transactional blocs, regional hegemons and hedging, not a clean Chinese century.",
+      "mechanism": "The provision gap: rival architectures take years to build (delays).",
+      "track": ["BRICS settlement volumes", "New security architectures", "Alliance realignment events"],
+      "falsifier": "A rival settlement/security architecture handles more than 15% of global trade at scale.",
+      "auto": null
+    },
+    {
+      "id": "P7",
+      "title": "Europe is the weakest link; political breaks appear there first",
+      "horizon": "2027-05-31",
+      "claim": "At least one European government faces a survival-level crisis over energy costs, or a far-right breakthrough explicitly fueled by energy misery.",
+      "mechanism": "P2 transmits hardest where dependence is highest and fiscal room thinnest. Winter amplifies it.",
+      "track": ["EU natural gas price (FRED, monthly)", "European diesel prices (manual)", "Government approval ratings", "Election results"],
+      "falsifier": "Europe weathers winter 2026–27 with no major political disruption.",
+      "auto": null
+    }
+  ],
+  "markets": [
+    { "slug": "strait-of-hormuz-traffic-returns-to-normal-by-december-31", "bears_on": ["P1"] },
+    { "slug": "will-the-us-invade-iran-before-2027", "bears_on": ["P4"] },
+    { "slug": "china-x-taiwan-military-clash-before-2027", "bears_on": ["P4", "P6"] },
+    { "slug": "iran-agrees-to-end-enrichment-of-uranium-by-december-31-1", "bears_on": ["P1", "P4"] }
+  ],
+  "news_queries": [
+    "(Hormuz OR \"Bab el-Mandeb\" OR Houthi OR \"Red Sea shipping\")",
+    "(Brent OR \"oil prices\" OR \"crude oil\" OR OPEC OR \"East-West pipeline\")",
+    "(dedollarization OR \"yuan settlement\" OR CIPS OR \"reserve currency\" OR petroyuan)",
+    "(\"war powers\" OR \"US strikes\" OR \"US airstrike\" OR \"B-2 bombers\" OR \"carrier strike group\")",
+    "(\"military AI\" OR \"Pentagon AI\" OR \"chip export controls\" OR \"AI export controls\" OR \"open-weight model\")",
+    "(BRICS OR \"Shanghai Cooperation\" OR multipolar)",
+    "(\"energy crisis\" OR \"gas prices\" OR \"no-confidence vote\" OR \"far-right\") Europe"
+  ],
+  "tag_rules": {
+    "P1": "hormuz|bab el-?mandeb|red sea|houthi|strait|tanker|shipping|interceptor",
+    "P2": "\\boil\\b|brent|crude|opec|diesel|\\bfuel\\b|\\bspr\\b|shale|pipeline|refiner",
+    "P3": "yuan|renminbi|dedollar|de-dollar|\\bcips\\b|petroyuan|reserve currency|\\bswift\\b|sanction",
+    "P4": "war powers|pentagon|bomber|b-2|b-52|carrier|airstrike|u\\.?s\\.? strike|us troops|centcom",
+    "P5": "\\bai\\b|artificial intelligence|compute|nvidia|\\bchips?\\b|semiconductor|export control|open-weight|gpu",
+    "P6": "brics|shanghai cooperation|\\bsco\\b|multipolar|alliance|security pact|taiwan",
+    "P7": "europe|\\beu\\b|germany|german|france|french|britain|\\buk\\b|italy|italian|far-right|no-confidence|coalition|energy crisis|gas price"
+  }
+}

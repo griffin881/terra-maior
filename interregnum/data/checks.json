@@ -1,0 +1,40 @@
+{
+  "_readme": "Monthly falsification log. One entry per check, newest first. verdict: holding | wobbling | broken. If broken, say what replaces the prediction, not why it was secretly right.",
+  "checks": [
+    {
+      "date": "2026-09-28",
+      "kind": "baseline",
+      "note": "Predictions issued. Auto signals recorded at issue so later drift is visible.",
+      "verdicts": {
+        "P1": {
+          "verdict": "holding",
+          "note": "Hormuz 30-day mean 4.0 transits/day = 5% of its 2025 baseline (85.5). Bab el-Mandeb 26.3/day = 35% of its pre-Houthi Jan–Oct 2023 baseline (74.6)."
+        },
+        "P2": {
+          "verdict": "wobbling",
+          "note": "Brent $114.89 on 2026-09-22, but the last 30 closes ran $87.77–130.80, outside the band in both directions. The band may be too narrow for this volatility; the falsifier (30 closes < $80) is nowhere near."
+        },
+        "P3": {
+          "verdict": "holding",
+          "note": "COFER USD share 57.13% in 2026-Q1, down from 58.38% a year earlier but UP from 56.42% in 2025-Q4. Far below the 59% falsifier; the direction is ambiguous."
+        },
+        "P4": {
+          "verdict": "holding",
+          "note": "Sept 20 stand-down fits the credibility-trap pattern."
+        },
+        "P5": {
+          "verdict": "holding",
+          "note": "No measurement yet; open-weight lag series not started."
+        },
+        "P6": {
+          "verdict": "holding",
+          "note": "Long horizon; nothing decisive either way."
+        },
+        "P7": {
+          "verdict": "holding",
+          "note": "Winter not yet begun. The falsifier needs operationalizing: define 'major political disruption' before December."
+        }
+      }
+    }
+  ]
+}

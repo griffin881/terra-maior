@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Interregnum Tracker</title>
+<meta name="description" content="Falsifier dashboard for the hegemonic-interregnum predictions: oil, chokepoints, reserve shares, prediction markets and a tagged event feed."/>
+<link rel="stylesheet" href="style.css"/>
+<script>
+  try { var t = localStorage.getItem("interregnum-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Interregnum Tracker</h1>
+      <p>Seven predictions about the contested transition out of the US-led order, each with a falsifier. Track the falsifiers, not the predictions.</p>
+      <div class="meta" id="meta">Loading data…</div>
+    </div>
+    <button class="theme-btn" id="theme-btn" type="button">Theme: auto</button>
+  </header>
+  <div id="errors"></div>
+
+  <nav class="tabs" aria-label="Sections">
+    <a href="#board">Falsifiers</a>
+    <a href="#indicators">Indicators</a>
+    <a href="#markets">Markets</a>
+    <a href="#feed">Event feed</a>
+    <a href="#loops">Loop map</a>
+    <a href="#checks">Monthly checks</a>
+    <a href="#ledger">Ledger</a>
+  </nav>
+
+  <section id="board">
+    <h2>Falsifier board</h2>
+    <p class="lede">The <em>auto signal</em> is computed daily from the data where a falsifier is measurable. The <em>verdict</em> is the latest human judgement from the monthly check. When they disagree, the disagreement is the thing to look at.</p>
+    <div class="grid three" id="pred-grid"></div>
+  </section>
+
+  <section id="indicators">
+    <h2>Indicators</h2>
+    <p class="lede">Latest readings, then the series behind them. Dashed lines are falsifier thresholds; the shaded band is P2's predicted range.</p>
+    <div class="grid tiles" id="tiles"></div>
+    <div class="grid two" style="margin-top:16px">
+      <div class="card" id="c-oil"></div>
+      <div class="card" id="c-choke"></div>
+      <div class="card" id="c-usd"></div>
+      <div class="card" id="c-cny"></div>
+      <div class="card" id="c-diesel"></div>
+      <div class="card" id="c-eugas"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="chart-head"><div><h3>Hand-tracked series</h3><div class="sub">No free machine-readable source. Add rows in <code>data/manual.json</code>; a series charts once it has two points.</div></div></div>
+      <div id="manual"></div>
+    </div>
+  </section>
+
+  <section id="markets">
+    <h2>Prediction markets</h2>
+    <p class="lede">Polymarket "Yes" price, daily. Crowd odds are an input to check your reasoning against, not a verdict. Markets are configured in <code>predictions.json</code>.</p>
+    <div class="grid two" id="market-grid"></div>
+  </section>
+
+  <section id="feed">
+    <h2>Event feed</h2>
+    <p class="lede">Curated events (hand-entered in <code>data/events.json</code>) plus a news feed pulled from GDELT and tagged by keyword. Treat the auto tags as a sorting aid: check the source before counting anything as evidence.</p>
+    <div class="filters" id="feed-filters">
+      <input type="search" id="feed-q" placeholder="Filter headlines…" aria-label="Filter headlines"/>
+    </div>
+    <ul class="feed" id="feed-list"></ul>
+    <button class="tagbtn feed-more" id="feed-more" type="button" hidden>Show more</button>
+  </section>
+
+  <section id="loops" class="loops">
+    <h2>Loop map</h2>
+    <p class="lede">A qualitative causal-loop sketch. Arrow signs give polarity: <b>+</b> means the two move together, <b>−</b> means they move oppositely. An even number of <b>−</b> links around a loop makes it reinforcing (R); an odd number makes it balancing (B). ‖ marks a delay, which is why the system can't snap back fast.</p>
+    <div class="card diagram-wrap" id="loop-diagram"></div>
+    <div class="loop-key" id="loop-key"></div>
+  </section>
+
+  <section id="checks">
+    <h2>Monthly falsification checks</h2>
+    <p class="lede">For each prediction: holding, wobbling, or broken. Update the predictions; don't defend them. New entries go in <code>data/checks.json</code>. A draft with the month's auto signals is generated in <code>checks/</code> on the 1st.</p>
+    <div class="card scroll-x" id="checks-table"></div>
+  </section>
+
+  <section id="ledger">
+    <h2>Ledger: what this framework hides</h2>
+    <ul class="ledger">
+      <li><b>Cybernetics</b> makes the transition look automatic. The loops describe pressures, not destinies; people misjudge, panic, or get lucky.</li>
+      <li><b>Dialectics</b> makes the outcome look progressive. The interregnum can produce something worse than the hegemon. Negation is not redemption.</li>
+      <li><b>Value theory</b> tempts economism. States have irreducible logics (prestige, regime survival, security dilemmas).</li>
+      <li><b>The prediction game</b> flatters the predictor. Hold these like a short position: defined, falsifiable, closable.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Data: <a href="https://fred.stlouisfed.org/">FRED</a> (Brent, WTI, US diesel, EU gas) ·
+    <a href="https://portwatch.imf.org/">IMF PortWatch</a> (chokepoint transits) ·
+    <a href="https://data.imf.org/en/datasets/IMF.STA:COFER">IMF COFER</a> (reserve shares) ·
+    <a href="https://polymarket.com/">Polymarket</a> (market odds) ·
+    <a href="https://www.gdeltproject.org/">GDELT</a> (news). Refreshed daily by a GitHub Action; see <code>interregnum/README.md</code>.
+  </footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

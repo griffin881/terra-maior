@@ -1,0 +1,37 @@
+{
+  "updated": "2026-09-28T20:56:28+00:00",
+  "predictions": {
+    "P1": {
+      "signal": "holding",
+      "detail": "Hormuz 30-day mean 4.0/day = 5% of 2025 baseline (85.5); Bab el-Mandeb 30-day mean 26.3/day = 35% of Jan\u2013Oct 2023 baseline (74.6)"
+    },
+    "P2": {
+      "signal": "wobbling",
+      "detail": "latest $114.89 (2026-09-22); last 30 closes $87.77\u2013130.80; current run below $80: 0; band exited"
+    },
+    "P3": {
+      "signal": "holding",
+      "detail": "USD share 57.13% in 2026-Q1 (vs 58.38% in 2025-Q1)"
+    },
+    "P4": {
+      "signal": "manual",
+      "detail": "no automatic falsifier; judge in the monthly check"
+    },
+    "P5": {
+      "signal": "manual",
+      "detail": "no automatic falsifier; judge in the monthly check"
+    },
+    "P6": {
+      "signal": "manual",
+      "detail": "no automatic falsifier; judge in the monthly check"
+    },
+    "P7": {
+      "signal": "manual",
+      "detail": "no automatic falsifier; judge in the monthly check"
+    }
+  },
+  "errors": [
+    "GDELT gave up on query (Brent OR \"oil prices\" OR \"crude oil\" OR OPEC OR \"East-West pipeline\")",
+    "GDELT gave up on query (dedollarization OR \"yuan settlement\" OR CIPS OR \"reserve currency\" OR petroyuan)"
+  ]
+}

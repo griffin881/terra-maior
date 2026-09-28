@@ -1,0 +1,37 @@
+name: Interregnum tracker data
+
+on:
+  schedule:
+    - cron: "17 6 * * *"   # daily, after FRED and PortWatch publish
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: interregnum-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch series, markets and news
+        run: python3 scripts/interregnum/fetch.py
+      - name: Draft monthly check (1st of the month)
+        run: |
+          if [ "$(date -u +%d)" = "01" ]; then python3 scripts/interregnum/monthly_check.py; fi
+      - name: Commit if changed
+        run: |
+          git config user.name "interregnum-bot"
+          git config user.email "interregnum-bot@users.noreply.github.com"
+          git add interregnum/data
+          if [ -d interregnum/checks ]; then git add interregnum/checks; fi
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "interregnum: data refresh $(date -u +%F)"
+          git push

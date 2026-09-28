@@ -1,0 +1,41 @@
+{
+  "_readme": "Series with no free machine-readable source. Append [date, value] rows by hand; the dashboard charts any series with 2+ points. Never back-fill a value you haven't sourced.",
+  "series": {
+    "war_risk_premium_gulf": {
+      "label": "Gulf war-risk hull premium, % of hull value per voyage",
+      "bears_on": ["P1", "P2"],
+      "where": "Lloyd's List, Reuters shipping desk, broker notes (Marsh, Howden)",
+      "rows": []
+    },
+    "eu_diesel": {
+      "label": "EU average diesel pump price, EUR/litre",
+      "bears_on": ["P7"],
+      "where": "EU Weekly Oil Bulletin (energy.ec.europa.eu), published as XLSX",
+      "rows": []
+    },
+    "nondollar_oil_settlement": {
+      "label": "Share of oil trade settled outside USD, %",
+      "bears_on": ["P3"],
+      "where": "BIS, SWIFT RMB Tracker, Kpler/Vortexa reporting; estimates vary widely, so record the source per row",
+      "rows": []
+    },
+    "cips_volume": {
+      "label": "CIPS annual/monthly processed value, CNY trillion",
+      "bears_on": ["P3", "P6"],
+      "where": "CIPS annual report, PBoC releases",
+      "rows": []
+    },
+    "open_weight_lag_months": {
+      "label": "Best open-weight model's lag behind the closed frontier, months",
+      "bears_on": ["P5"],
+      "where": "Epoch AI benchmarks hub, LMArena. Record the benchmark used.",
+      "rows": []
+    },
+    "saudi_east_west_throughput": {
+      "label": "Saudi East-West pipeline throughput, mb/d",
+      "bears_on": ["P2"],
+      "where": "Aramco statements, Kpler/Vortexa Yanbu loadings",
+      "rows": []
+    }
+  }
+}

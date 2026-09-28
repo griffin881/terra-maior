@@ -1,0 +1,26 @@
+{
+  "_readme": "Hand-curated events: the ones worth keeping after the auto feed scrolls past. Add newest first. tags = prediction ids (P1..P7) and/or loop/contradiction ids (P1-loop..N4, C1..C3). source should be a URL where possible.",
+  "items": [
+    {
+      "date": "2026-09-20",
+      "title": "US bombers loaded for strikes, then stood down",
+      "note": "The template for C1, the credibility trap: escalation prepared, then withheld on domestic cost.",
+      "tags": ["P4", "C1"],
+      "source": "Framework memo, 2026-09-28"
+    },
+    {
+      "date": "2026-09-28",
+      "title": "Iran economic-collapse clock: ~70% inflation, oil exports halted ~7 weeks, running on floating storage",
+      "note": "Iran's binding constraint. It limits how long P2-loop pressure can be sustained from Tehran's side.",
+      "tags": ["P1", "P2"],
+      "source": "Framework memo, 2026-09-28"
+    },
+    {
+      "date": "2026-09-28",
+      "title": "Houthis entrenching at Bab el-Mandeb: trenches, island positions, a 'ship transit administration'",
+      "note": "Sunk costs signal staying, not raiding. This is the P1 mechanism.",
+      "tags": ["P1"],
+      "source": "Framework memo, 2026-09-28"
+    }
+  ]
+}
