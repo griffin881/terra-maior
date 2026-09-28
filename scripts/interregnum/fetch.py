@@ -137,8 +137,15 @@ def clean_title(t):
 
 
 def news(queries, rules, previous):
-    seen = {a["url"]: {**a, "title": clean_title(a["title"])} for a in previous}
     compiled = {pid: re.compile(rx, re.I) for pid, rx in rules.items()}
+    # Re-tag stored items with the current rules, so edits to tag_rules apply
+    # to the whole feed; items no rule matches any more drop out.
+    seen = {}
+    for a in previous:
+        title = clean_title(a["title"])
+        tags = [pid for pid, rx in compiled.items() if rx.search(title)]
+        if tags:
+            seen[a["url"]] = {**a, "title": title, "tags": tags}
     skipped = []
     for i, q in enumerate(queries):
         if i:

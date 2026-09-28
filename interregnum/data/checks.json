@@ -4,7 +4,7 @@
     {
       "date": "2026-09-28",
       "kind": "baseline",
-      "note": "Predictions issued. Auto signals recorded at issue so later drift is visible.",
+      "note": "Predictions issued. Auto signals recorded at issue so later drift is visible. P8 and P9 added and P7 falsifier revised on the same date.",
       "verdicts": {
         "P1": {
           "verdict": "holding",
@@ -32,7 +32,15 @@
         },
         "P7": {
           "verdict": "holding",
-          "note": "Winter not yet begun. The falsifier needs operationalizing: define 'major political disruption' before December."
+          "note": "Winter not yet begun. Falsifier now specified by break criteria (a)–(d) in predictions.json (framework revision 2026-09-28); judge each month against those four, not a general sense of 'disruption'."
+        },
+        "P8": {
+          "verdict": "holding",
+          "note": "Added in the 2026-09-28 revision. Probing is the baseline, not the signal (per the revision: Sept 2025 NATO shoot-downs, two Article 4 invocations). Break bar: manned-aircraft engagement, Article 5, casualties, or kinetic response beyond drones."
+        },
+        "P9": {
+          "verdict": "holding",
+          "note": "Added in the 2026-09-28 revision. Baseline is 2026 gray-zone levels (per the revision: coast-guard pressure shifting east of Taiwan, US carrier gap in August). Break bar: CCG quarantine at scale, Kinmen/Matsu seizure or blockade, 200+-sortie exercise, or declared closure east of Taiwan."
         }
       }
     }

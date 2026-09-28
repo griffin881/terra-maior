@@ -117,7 +117,7 @@
     "P5": "\\bai\\b|artificial intelligence|compute|nvidia|\\bchips?\\b|semiconductor|export control|open-weight|gpu",
     "P6": "brics|shanghai cooperation|\\bsco\\b|multipolar|alliance|security pact|taiwan",
     "P7": "europe|\\beu\\b|germany|german|france|french|britain|\\buk\\b|italy|italian|far-right|no-confidence|coalition|energy crisis|gas price",
-    "P8": "russia.*nato|nato.*russia|airspace violation|drone incursion|article 5|article 4|baltic|zapad|belarus|oreshnik|eastern flank",
-    "P9": "taiwan|kinmen|matsu|pratas|median line|quarantine.*taiwan|taiwan.*quarantine|pla.*sortie|coast guard"
+    "P8": "russia.*nato|nato.*russia|airspace violation|drone incursion|article 5|article 4|zapad|oreshnik|eastern flank|(baltic|belarus).*(russia|russian|\\bnato\\b|airspace|\\bprob(e|es|ed|ing)\\b|incursion)|(russia|russian|\\bnato\\b|airspace|\\bprob(e|es|ed|ing)\\b|incursion).*(baltic|belarus)",
+    "P9": "taiwan|kinmen|matsu|pratas|median line|pla.*sortie|chin(a|ese) coast guard|\\bccg\\b"
   }
 }
