@@ -22,7 +22,15 @@ COMMIT_RE = re.compile(r"\bgit\b[^;&|\n]*\bcommit\b")
 PATH_RE = re.compile(r"[\w.-]*[/\w-]+\.[A-Za-z]{1,6}\b")
 
 
-def emit(obj):
+def emit(obj, payload, title):
+    reason = obj.get("reason") or obj["hookSpecificOutput"].get("permissionDecisionReason") \
+        or obj["hookSpecificOutput"].get("additionalContext", "")
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import team_log
+        team_log.log_event(payload.get("session_id"), title, team_log.quote(reason))
+    except Exception:
+        pass
     print(json.dumps(obj))
     sys.exit(0)
 
@@ -91,7 +99,7 @@ def commit_gate(payload):
             "Call the advisor (or the `reviewer` subagent if the advisor is unavailable) "
             "with the staged diff and the original request, address its findings, then commit."
         ),
-    }})
+    }}, payload, "Gate: commit blocked (no diff audit)")
 
 
 def plan_gate(payload):
@@ -111,7 +119,7 @@ def plan_gate(payload):
             "Multi-file plan: consult the advisor before finalizing it, "
             "incorporate or rebut its feedback, then present the plan again."
         ),
-    }})
+    }}, payload, "Gate: multi-file plan sent back for advisor review")
 
 
 def stop_gate(payload):
@@ -124,7 +132,7 @@ def stop_gate(payload):
             "Call the advisor (or the `reviewer` subagent) for a diff contract audit, "
             "fix anything it flags, then finish."
         ),
-    })
+    }, payload, "Gate: finish blocked (no diff audit)")
 
 
 def signature(text):
@@ -159,7 +167,7 @@ def failure_watch(payload):
             "The same error has now failed twice in a row. Stop trying fixes: call the advisor "
             "with the error, both attempts, and the relevant code before a third attempt."
         ),
-    }})
+    }}, payload, "Gate: same error twice, advisor consult required")
 
 
 MODES = {
