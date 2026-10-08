@@ -1,0 +1,4 @@
+.claude/state/
+.claude/team-log.md
+.claude/settings.local.json
+__pycache__/
